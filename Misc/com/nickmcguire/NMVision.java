@@ -19,7 +19,7 @@ public class NMVision
 		public final int value;
 		
 		/**
-		 * For full definition of what these methods mean look at, "NI Vision for LabWindows/CVI Function Reference"
+		 * For full definition of what these methods mean look at, "NI Vision for LabWindows/CVI Function Reference".
 		 */
 		
 		public static final MorphologyOptions IMAQ_AUTOM = new MorphologyOptions(0);

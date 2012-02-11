@@ -1,9 +1,7 @@
 package Year2012.com.BCHS;
 
 import com.sun.squawk.util.MathUtils;
-import edu.wpi.first.wpilibj.AnalogChannel;
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Jaguar;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
 import edu.wpi.first.wpilibj.image.BinaryImage;
@@ -12,7 +10,8 @@ import edu.wpi.first.wpilibj.image.NIVisionException;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 
 
-public class BCHSBot extends IterativeRobot {
+public class BCHSBot extends IterativeRobot 
+{
 
 	AxisCamera camera = AxisCamera.getInstance();
 	ColorImage colorImage;
@@ -25,12 +24,23 @@ public class BCHSBot extends IterativeRobot {
 	Jaguar left = new Jaguar(1);
 	Jaguar right = new Jaguar(2);
 	AnalogChannel batman = new AnalogChannel(1);
+	
+	RobotDrive drive;
+	Joystick stick;
+	double Xaxis = 0;
+	double Yaxis = 0;
+	
 
-	public void robotInit() {
+	public void robotInit() 
+	{
+		drive = new RobotDrive(1,3,2,4);
+		stick = new Joystick(1);
 	}
 
-	public void autonomousPeriodic() {
-		try {
+	public void autonomousPeriodic() 
+	{
+		try 
+		{
 			double volts = (batman.getVoltage() * 1000) / 0.9766;
 
 			colorImage = camera.getImage();
@@ -56,24 +66,32 @@ public class BCHSBot extends IterativeRobot {
 			double theta = MathUtils.atan((tarPix * 0.5) / d);
 
 
-			if (theta < 0) {
+			if (theta < 0) 
+			{
 				theta = theta * -1;
 			}
 
-			for (int i = 0; i < particles.length; i++) {
+			for (int i = 0; i < particles.length; i++) 
+			{
 				System.out.println("Particle number " + i + " is " + particles[i]);
 			}
 
 			System.out.println("\n\n\n");
 			System.out.println("The tangent angle is " + theta);
 
-		} catch (AxisCameraException ex) {
+		} catch (AxisCameraException ex)
+		{
 			ex.printStackTrace();
-		} catch (NIVisionException ex) {
+		} catch (NIVisionException ex) 
+		{
 			ex.printStackTrace();
 		}
 	}
 
-	public void teleopPeriodic() {
+	public void teleopPeriodic() 
+	{
+		Xaxis = stick.getX();
+		Yaxis = stick.getY();
+		drive.arcadeDrive(Yaxis, Xaxis, false);
 	}
 }

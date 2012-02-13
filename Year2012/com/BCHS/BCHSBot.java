@@ -37,16 +37,8 @@ public class BCHSBot extends IterativeRobot
 	{
 		try 
 		{
+			BCHSCamera.getParticles(camera, new int[] {0, 0, 0, 0, 0, 0});
 			double volts = (ultraSonic.getVoltage() * 1000) / 0.9766;
-
-			colorImage = camera.getImage();
-			binaryImage = colorImage.thresholdHSI(69, 159, 94, 255, 17, 207);
-
-			colorImage.free();
-			binaryImage.convexHull(true);
-			binaryImage.removeSmallObjects(true, 0);
-			particles = binaryImage.getOrderedParticleAnalysisReports();
-
 			first = particles[0];
 			firstsWidth = first.imageWidth;
 
@@ -75,9 +67,6 @@ public class BCHSBot extends IterativeRobot
 			System.out.println("\n\n\n");
 			System.out.println("The tangent angle is " + theta);
 
-		} catch (AxisCameraException ex)
-		{
-			ex.printStackTrace();
 		} catch (NIVisionException ex) 
 		{
 			ex.printStackTrace();

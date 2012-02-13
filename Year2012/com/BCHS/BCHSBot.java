@@ -13,35 +13,31 @@ import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 public class BCHSBot extends IterativeRobot 
 {
 
-	AxisCamera camera = AxisCamera.getInstance();
+	AxisCamera camera;
 	ColorImage colorImage;
 	BinaryImage binaryImage;
 	ParticleAnalysisReport[] particles;
 	ParticleAnalysisReport first;
-	int firstsWidth;
-	int pixelCentre;
-	int close = 0;
-	Jaguar left = new Jaguar(1);
-	Jaguar right = new Jaguar(2);
-	AnalogChannel batman = new AnalogChannel(1);
+	int firstsWidth, pixelCentre, close;
+	AnalogChannel ultraSonic;
 	
 	RobotDrive drive;
-	Joystick stick;
-	double Xaxis = 0;
-	double Yaxis = 0;
+	Joystick driveJoystick;
 	
 
 	public void robotInit() 
 	{
+		camera = AxisCamera.getInstance();
 		drive = new RobotDrive(1,3,2,4);
-		stick = new Joystick(1);
+		driveJoystick = new Joystick(1);
+		ultraSonic = new AnalogChannel(1);
 	}
 
 	public void autonomousPeriodic() 
 	{
 		try 
 		{
-			double volts = (batman.getVoltage() * 1000) / 0.9766;
+			double volts = (ultraSonic.getVoltage() * 1000) / 0.9766;
 
 			colorImage = camera.getImage();
 			binaryImage = colorImage.thresholdHSI(69, 159, 94, 255, 17, 207);
@@ -90,8 +86,6 @@ public class BCHSBot extends IterativeRobot
 
 	public void teleopPeriodic() 
 	{
-		Xaxis = stick.getX();
-		Yaxis = stick.getY();
-		drive.arcadeDrive(Yaxis, Xaxis, false);
+		drive.arcadeDrive(driveJoystick);
 	}
 }

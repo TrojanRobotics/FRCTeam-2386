@@ -13,4 +13,8 @@ public class BCHSRetrieval
 	{
 		liftJag.set(speed);
 	}
+	public void stop()
+	{
+		liftJag.stopMotor();
+	}
 }

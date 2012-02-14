@@ -17,6 +17,12 @@ public class BCHSBot extends IterativeRobot
 	AnalogChannel ultraSonic;
 	RobotDrive drive;
 	Joystick driveJoystick;
+	double distance;
+	double speed;
+	double RPM;
+	BCHSLauncher launcher; 
+	BCHSRetrieval retrieval;
+	BCHSBundle motorBundle;
 
 	public void robotInit()
 	{
@@ -24,6 +30,10 @@ public class BCHSBot extends IterativeRobot
 		drive = new RobotDrive(1, 3, 2, 4);
 		driveJoystick = new Joystick(1);
 		ultraSonic = new AnalogChannel(1);
+		launcher = new BCHSLauncher(0, 0, 1, 2);
+		retrieval = new BCHSRetrieval(3);
+		motorBundle = new BCHSBundle(1,2);
+		launcher.encoder.setDistancePerPulse(0.00237);
 	}
 
 	public void autonomousPeriodic()
@@ -64,5 +74,8 @@ public class BCHSBot extends IterativeRobot
 	public void teleopPeriodic()
 	{
 		drive.arcadeDrive(driveJoystick);
+		retrieval.liftJag.set(speed);
+		launcher.launcherPID.setSetpoint(RPM);
+		launcher.motorBundle.set(speed);
 	}
 }

@@ -3,14 +3,14 @@ import edu.wpi.first.wpilibj.Jaguar;
 
 public class BCHSRetrieval 
 {
-	Jaguar retrievaljag;
+	Jaguar liftJag;
 	
-	public BCHSRetrieval(int retrievalJagChannel)
+	public BCHSRetrieval(int liftJagChannel)
 	{
-		retrievaljag = new Jaguar(retrievalJagChannel);
+		liftJag = new Jaguar(liftJagChannel);
 	}
 	public void set(double speed)
 	{
-		retrievaljag.set(speed);
+		liftJag.set(speed);
 	}
 }

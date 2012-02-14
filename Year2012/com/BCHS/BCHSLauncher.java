@@ -6,10 +6,11 @@ import edu.wpi.first.wpilibj.PIDController;
 
 public class BCHSLauncher 
 {
-	Encoder encoder;
+	public Encoder encoder;
 	PIDController launcherPID;
 	double kp, ki, kd;
 	BCHSBundle motorBundle;
+	boolean runOnce = false;
 	
 	public BCHSLauncher(int aChannel, int bChannel, int channelOne, int channelTwo)
 	{
@@ -23,12 +24,21 @@ public class BCHSLauncher
 	
 	public void setRPM(double RPM)  //Set RPM of Launcher
 	{
-		launcherPID.setSetpoint(RPM);
-		launcherPID.enable();
+		if (!runOnce)
+		{	
+			launcherPID.setSetpoint(RPM);
+			launcherPID.enable();
+			runOnce = true;
+		}
 	}
 	
 	public void set(double speed)
 	{
 		motorBundle.set(speed);
-	}		
+	}
+	public void stop()
+	{
+		motorBundle.stop();
+		launcherPID.disable();
+	}
 }

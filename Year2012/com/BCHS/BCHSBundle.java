@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.SpeedController;
 
-public class BCHSSide implements PIDOutput, SpeedController
+public class BCHSBundle implements PIDOutput, SpeedController
 {
 	protected Jaguar jagOne, jagTwo;
 	
-	public BCHSSide(int channelOne, int channelTwo)
+	public BCHSBundle(int channelOne, int channelTwo)
 	{
 		jagOne = new Jaguar(channelOne);
 		jagTwo = new Jaguar(channelTwo);

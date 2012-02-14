@@ -1,41 +1,34 @@
 package Year2012.com.BCHS;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.PIDController;
+
 
 public class BCHSLauncher 
 {
-	public Encoder encoder;
-	Jaguar frontjag, backjag;
-	PIDController PID1, PID2;
+	Encoder encoder;
+	PIDController launcherPID;
 	double kp, ki, kd;
+	BCHSBundle motorBundle;
 	
-	
-	public BCHSLauncher (int aChannel, int bChannel, int frontjagChannel, int backjagChannel)
+	public BCHSLauncher(int aChannel, int bChannel, int channelOne, int channelTwo)
 	{
 		encoder = new Encoder(aChannel, bChannel);
-		frontjag = new Jaguar(frontjagChannel);
-		backjag = new Jaguar(backjagChannel);
-		PID1 = new PIDController(kp, ki, kd, encoder, frontjag);
-		PID2 = new PIDController(kp, ki, kd, encoder, backjag);
+		launcherPID = new PIDController(kp, ki, kd, encoder, motorBundle);
 		encoder.start();
 		encoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kRate);
+		motorBundle = new BCHSBundle(channelOne, channelTwo);
 				
 	}
+	
 	public void setRPM(double RPM)  //Set RPM of Launcher
 	{
-		PID1.setSetpoint(RPM);
-		PID2.setSetpoint(RPM);
-		PID1.enable();
-		PID2.enable();
-			
-			
+		launcherPID.setSetpoint(RPM);
+		launcherPID.enable();
 	}
 	
 	public void set(double speed)
 	{
-		frontjag.set(speed);
-		backjag.set(speed);
+		motorBundle.set(speed);
 	}		
 }

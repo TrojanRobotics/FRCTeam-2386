@@ -1,8 +1,11 @@
 package Year2012.com.BCHS;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
@@ -26,10 +29,20 @@ public class BCHSBot extends IterativeRobot
 	BCHSRetrieval retrieval;
 	BCHSHockey hockeySticks;
 	
+	DriverStation ds = DriverStation.getInstance();
+	
+	Encoder leftEncoder, rightEncoder;
+	PIDController leftPID, rightPID;
+	
+	double kp, ki, kd;
+	
+	boolean run = true;
+	
 	
 	public void robotInit() 
 	{
-		camera = AxisCamera.getInstance();
+		if (ds.getDigitalIn(1))
+			camera = AxisCamera.getInstance();
 
 		leftSide = new BCHSBundle(1, 2);
 		rightSide = new BCHSBundle(3,4);
@@ -43,6 +56,24 @@ public class BCHSBot extends IterativeRobot
 		launcher.encoder.setDistancePerPulse(0.0237);
 		
 		hockeySticks = new BCHSHockey(6,8,9);
+		
+		kp = 0.3;
+		ki = 0.0;
+		kd = 0.0;
+		
+		leftEncoder = new Encoder(3, 4);
+		rightEncoder = new Encoder(1, 2);
+		leftEncoder.setDistancePerPulse(0.0237);
+		rightEncoder.setDistancePerPulse(0.0237);
+		leftEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kDistance);
+		rightEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kDistance);
+		rightEncoder.start();
+		leftEncoder.start();
+		
+		leftPID = new PIDController(kp, ki, kd, leftEncoder, leftSide);
+		rightPID = new PIDController(kp, ki, kd, rightEncoder, rightSide);
+		leftPID.enable();
+		rightPID.enable();
 	}
 
 	public void autonomousPeriodic() 
@@ -55,12 +86,20 @@ public class BCHSBot extends IterativeRobot
 
 	public void teleopPeriodic() 
 	{
-		drive.arcadeDrive(driveJoystick);
+		//drive.arcadeDrive(driveJoystick);
 		
+		if (run)
+		{
+			leftPID.setSetpoint(12);
+			rightPID.setSetpoint(12);
+			run = false;
+		}
+		
+		/*
 		if (driveJoystick.getRawButton(11))
-			hockeySticks.set(0.2);
+			hockeySticks.set(0.5);
 		else if (driveJoystick.getRawButton(10))
-			hockeySticks.set(-0.2);
+			hockeySticks.set(-0.5);
 		else
 			hockeySticks.set(0);
 		
@@ -77,5 +116,6 @@ public class BCHSBot extends IterativeRobot
 			retrieval.set(0.5);
 		else
 			retrieval.set(0.0);
+		 * */
 	}
 }

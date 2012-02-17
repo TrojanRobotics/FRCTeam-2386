@@ -6,36 +6,46 @@ import edu.wpi.first.wpilibj.PIDController;
 
 public class BCHSLauncher 
 {
-	public Encoder encoder;
+	Encoder encoder;
 	PIDController launcherPID;
 	double kp, ki, kd;
 	BCHSBundle motorBundle;
-	boolean runOnce = false;
 	
+	/**
+	 * Creates a Launcher object.
+	 * @param aChannel The "a" channel for the encoder.
+	 * @param bChannel The "b" channel for the encoder.
+	 * @param channelOne The 1st channel for the PID bundle.
+	 * @param channelTwo The 2nd channel for the PID bundle.
+	 */
 	public BCHSLauncher(int aChannel, int bChannel, int channelOne, int channelTwo)
 	{
 		encoder = new Encoder(aChannel, bChannel);
+		motorBundle = new BCHSBundle(channelOne, channelTwo);
 		launcherPID = new PIDController(kp, ki, kd, encoder, motorBundle);
 		encoder.start();
 		encoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kRate);
-		motorBundle = new BCHSBundle(channelOne, channelTwo);
-				
 	}
-	
+	/**
+	 * A method to set RPM
+	 * @param RPM Setpoint for PID.
+	 */
 	public void setRPM(double RPM)  //Set RPM of Launcher
 	{
-		if (!runOnce)
-		{	
-			launcherPID.setSetpoint(RPM);
-			launcherPID.enable();
-			runOnce = true;
-		}
+		launcherPID.setSetpoint(RPM);
+		launcherPID.enable();
 	}
-	
+	/**
+	 * Set method for BCHSBundle
+	 * @param speed Sets speed for PID bundle.
+	 */
 	public void set(double speed)
 	{
 		motorBundle.set(speed);
 	}
+	/**
+	 * Stop method for BCHSBundle.
+	 */
 	public void stop()
 	{
 		motorBundle.stop();

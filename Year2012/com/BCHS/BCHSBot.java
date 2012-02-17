@@ -79,140 +79,165 @@ public class BCHSBot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-		particles = BCHSCamera.getParticles(camera, new int[]{0, 0, 0, 0, 0, 0});
-		for (int i = 0; i < particles.length; i++) {
-			System.out.println("Particle number " + i + " is " + particles[i]);
-		}
+		
 
-		leftPID.setSetpoint(-120);
-		rightPID.setSetpoint(120);
-		hockeySticks.set(0.75);
-		launcher.set(0.7);
-		Timer.delay(3.0);
-		retrieval.set(0.5);
-		Timer.delay(5.0);
-		leftPID.disable();
-		rightPID.disable();
-		retrieval.stop();
-
-		//kinect Code
-		double leftAxis = 0.0;
-		double rightAxis = 0.0;
-
-		if (kinect.getSkeleton().GetTrackState() == Skeleton.tTrackState.kTracked) {
-			Ure = kinect.getSkeleton().GetSpine().getY();
-			Fail = kinect.getSkeleton().GetShoulderCenter().getY();
-			OriginGetY = ((Fail + Ure) / 2);
-			OriginGetX = kinect.getSkeleton().GetShoulderCenter().getX();
-
-			/*
-			 * Determine angle of each arm and map to range -1,1
-			 */
-			leftAngle = AngleXY(kinect.getSkeleton().GetElbowLeft(), kinect.getSkeleton().GetWristLeft(), true);
-			rightAngle = AngleXY(kinect.getSkeleton().GetShoulderRight(), kinect.getSkeleton().GetWristRight(), false);
-			EtoWLeft = AngleXY(kinect.getSkeleton().GetElbowLeft(), kinect.getSkeleton().GetWristLeft(), true);
-			WtoHLeft = AngleXY(kinect.getSkeleton().GetWristLeft(), kinect.getSkeleton().GetHandLeft(), true);
-			leftAngleYZ = AngleYZ(kinect.getSkeleton().GetShoulderLeft(), kinect.getSkeleton().GetWristLeft(), true);
-			leftAxis = CoerceToRange(leftAngle, -70, 70, -1, 1);
-			rightAxis = CoerceToRange(rightAngle, -70, 70, -1, 1);
-
-			/*
-			 * Determine the head angle and use it to set the Head buttons
-			 */
-			headAngle = AngleXY(kinect.getSkeleton().GetShoulderCenter(), kinect.getSkeleton().GetHead(), false);
-
-			/*
-			 * Calculate the leg angles in the XY plane and use them to set the
-			 * Leg Out buttons
-			 */
-			leftLegAngle = AngleXY(kinect.getSkeleton().GetHipLeft(), kinect.getSkeleton().GetAnkleLeft(), true);
-			rightLegAngle = AngleXY(kinect.getSkeleton().GetHipRight(), kinect.getSkeleton().GetAnkleRight(), false);
-
-			/*
-			 * Calculate the leg angle in the YZ plane and use them to set the
-			 * Leg Forward and Leg Back buttons
-			 */
-			rightLegYZ = AngleYZ(kinect.getSkeleton().GetHipRight(), kinect.getSkeleton().GetKneeRight(), false);
-			RKneeAnkleYZ = AngleYZ(kinect.getSkeleton().GetKneeRight(), kinect.getSkeleton().GetAnkleRight(), false);
-			leftLegYZ = AngleYZ(kinect.getSkeleton().GetHipLeft(), kinect.getSkeleton().GetKneeLeft(), false);
-			LKneeAnkleYZ = AngleYZ(kinect.getSkeleton().GetKneeLeft(), kinect.getSkeleton().GetAnkleLeft(), false);
-
-			//throttle
-			Nothing = (kinect.getSkeleton().GetHipRight().getZ());
-			Happened = (kinect.getSkeleton().GetWristRight().getZ());
-			ForOrBackRight = Nothing - Happened;
-
-
-			if (rightLegYZ < -110.0 || leftLegYZ < -110.0) {  //This is an emergancy brake
-				setSpeed(0.0, 0.0);
-				if (rightLegYZ < -110.0) {
-					launcher.set(0.7);
-				}
-				/*
-				 * else if (leftLegYZ < -110.0){ hockey.set();
-                            }
-				 */
-				if (RKneeAnkleYZ < -130.0) {
-					retrieval.set(0.75);
-					//lcd.println(DriverStationLCD.Line.kMain6, 1, "Falcon Kick ");  
-					//lcd.updateLCD();                        
-				} else {
-					retrieval.set(0.0);
-				}
-			} else {
-				if (leftAngle < 180.0 && leftAngle > 0.0) {
-					if (ForOrBackRight > 0.30) {
-						ForOrBackRight = 0.30;
-					} else if (ForOrBackRight < -0.30) {
-						ForOrBackRight = -0.30;
-					}
-					ForOrBackRight = ForOrBackRight / 0.3;
-					if (leftAngle == 90.0) {
-						setSpeed(ForOrBackRight, ForOrBackRight);
-					} else if (leftAngle > 90.0) {
-						if (leftAngle > 170.0) {
-							leftAngle = 170.0;
-						}
-						//Gleft =(100/(91-leftAngleYZ)*(1/90)) ;
-						rar = ForOrBackRight * ((170.0 - leftAngle) / 80.0);
-						setSpeed(rar, ForOrBackRight);
-					} else {
-						if (leftAngle < 10.0) {
-							leftAngle = 10.0;
-						}
-						ror = ForOrBackRight * ((leftAngle - 10.0) / 80.0);
-						setSpeed(ForOrBackRight, ror);
-					}
-				}
-				launcher.set(0.0);
-				retrieval.set(0.0);
+		if (ds.getDigitalIn(1))
+		{
+			particles = BCHSCamera.getParticles(camera, new int[]{0, 0, 0, 0, 0, 0});
+			for (int i = 0; i < particles.length; i++) {
+				System.out.println("Particle number " + i + " is " + particles[i]);
 			}
 		}
-		// Timer.delay(.01);   /* Delay 10ms to reduce proceessing load*/
+		else if (ds.getDigitalIn(2))
+		{
+			leftPID.setSetpoint(-120);
+			rightPID.setSetpoint(120);
+			hockeySticks.set(0.75);
+			launcher.set(0.7);
+			Timer.delay(3.0);
+			retrieval.set(0.5);
+			Timer.delay(5.0);
+			leftPID.disable();
+			rightPID.disable();
+			retrieval.stop();
+		}
+		else if (ds.getDigitalIn(3))
+		{
+			//kinect Code
+			double leftAxis = 0.0;
+			double rightAxis = 0.0;
+
+			if (kinect.getSkeleton().GetTrackState() == Skeleton.tTrackState.kTracked)
+			{
+				Ure = kinect.getSkeleton().GetSpine().getY();
+				Fail = kinect.getSkeleton().GetShoulderCenter().getY();
+				OriginGetY = ((Fail + Ure) / 2);
+				OriginGetX = kinect.getSkeleton().GetShoulderCenter().getX();
+
+				/*
+				 * Determine angle of each arm and map to range -1,1
+				 */
+				leftAngle = AngleXY(kinect.getSkeleton().GetElbowLeft(), kinect.getSkeleton().GetWristLeft(), true);
+				rightAngle = AngleXY(kinect.getSkeleton().GetShoulderRight(), kinect.getSkeleton().GetWristRight(), false);
+				EtoWLeft = AngleXY(kinect.getSkeleton().GetElbowLeft(), kinect.getSkeleton().GetWristLeft(), true);
+				WtoHLeft = AngleXY(kinect.getSkeleton().GetWristLeft(), kinect.getSkeleton().GetHandLeft(), true);
+				leftAngleYZ = AngleYZ(kinect.getSkeleton().GetShoulderLeft(), kinect.getSkeleton().GetWristLeft(), true);
+				leftAxis = CoerceToRange(leftAngle, -70, 70, -1, 1);
+				rightAxis = CoerceToRange(rightAngle, -70, 70, -1, 1);
+
+				/*
+				 * Determine the head angle and use it to set the Head buttons
+				 */
+				headAngle = AngleXY(kinect.getSkeleton().GetShoulderCenter(), kinect.getSkeleton().GetHead(), false);
+
+				/*
+				 * Calculate the leg angles in the XY plane and use them to set the
+				 * Leg Out buttons
+				 */
+				leftLegAngle = AngleXY(kinect.getSkeleton().GetHipLeft(), kinect.getSkeleton().GetAnkleLeft(), true);
+				rightLegAngle = AngleXY(kinect.getSkeleton().GetHipRight(), kinect.getSkeleton().GetAnkleRight(), false);
+
+				/*
+				 * Calculate the leg angle in the YZ plane and use them to set the
+				 * Leg Forward and Leg Back buttons
+				 */
+				rightLegYZ = AngleYZ(kinect.getSkeleton().GetHipRight(), kinect.getSkeleton().GetKneeRight(), false);
+				RKneeAnkleYZ = AngleYZ(kinect.getSkeleton().GetKneeRight(), kinect.getSkeleton().GetAnkleRight(), false);
+				leftLegYZ = AngleYZ(kinect.getSkeleton().GetHipLeft(), kinect.getSkeleton().GetKneeLeft(), false);
+				LKneeAnkleYZ = AngleYZ(kinect.getSkeleton().GetKneeLeft(), kinect.getSkeleton().GetAnkleLeft(), false);
+
+				//throttle
+				Nothing = (kinect.getSkeleton().GetHipRight().getZ());
+				Happened = (kinect.getSkeleton().GetWristRight().getZ());
+				ForOrBackRight = Nothing - Happened;
+
+
+				if (rightLegYZ < -110.0 || leftLegYZ < -110.0) //This is an emergancy brake
+				{
+					setSpeed(0.0, 0.0);
+					
+					if (rightLegYZ < -110.0)
+						launcher.set(0.7);
+					
+					if (RKneeAnkleYZ < -130.0)
+						retrieval.set(0.75);                    
+					else
+						retrieval.set(0.0);
+					
+				}
+				else
+				{
+					if (leftAngle < 180.0 && leftAngle > 0.0)
+					{
+						if (ForOrBackRight > 0.30)
+							ForOrBackRight = 0.30;
+						else if (ForOrBackRight < -0.30)
+							ForOrBackRight = -0.30;
+						
+						ForOrBackRight = ForOrBackRight / 0.3;
+						
+						if (leftAngle == 90.0)
+						{
+							setSpeed(ForOrBackRight, ForOrBackRight);
+						} 
+						else if (leftAngle > 90.0)
+						{
+							if (leftAngle > 170.0)
+								leftAngle = 170.0;
+
+							rar = ForOrBackRight * ((170.0 - leftAngle) / 80.0);
+							setSpeed(rar, ForOrBackRight);
+						}
+						else
+						{
+							if (leftAngle < 10.0)
+								leftAngle = 10.0;
+							
+							ror = ForOrBackRight * ((leftAngle - 10.0) / 80.0);
+							setSpeed(ForOrBackRight, ror);
+						}
+					}
+					
+					launcher.set(0.0);
+					retrieval.set(0.0);
+				}
+			}
+		}
 	}
 
-	public void teleopPeriodic() {
+	public void teleopPeriodic()
+	{
 		//drive.arcadeDrive(driveJoystick);
 
-		if (run) {
+		if (run)
+		{
 			leftPID.setSetpoint(12);
 			rightPID.setSetpoint(12);
 			run = false;
 		}
-
-		/*
-		 * if (driveJoystick.getRawButton(11)) hockeySticks.set(0.5); else if
-		 * (driveJoystick.getRawButton(10)) hockeySticks.set(-0.5); else
-		 * hockeySticks.set(0);
-		 *
-		 * //bchsLauncher if (driveJoystick.getTrigger()) launcher.set(-0.7);
-		 * else launcher.set(0.0);
-		 *
-		 * //bchsRetrieval if (driveJoystick.getRawButton(3))
-		 * retrieval.set(-0.5); else if (driveJoystick.getRawButton(2))
-		 * retrieval.set(0.5); else retrieval.set(0.0);
-		 *
-		 */
+		else
+		{
+			if (driveJoystick.getRawButton(11)) 
+				hockeySticks.set(0.5); 
+			else if (driveJoystick.getRawButton(10)) 
+				hockeySticks.set(-0.5); 
+			else
+				hockeySticks.set(0);
+			
+			//bchsLauncher 
+			if (driveJoystick.getTrigger()) 
+				launcher.set(-0.7);
+			else
+				launcher.set(0.0);
+			//bchsRetrieval 
+			
+			if (driveJoystick.getRawButton(3))
+				retrieval.set(-0.5); 
+			else if (driveJoystick.getRawButton(2))
+				retrieval.set(0.5); 
+			else 
+				retrieval.set(0.0);
+		}
 	}
 
 	/**
@@ -227,7 +252,8 @@ public class BCHSBot extends IterativeRobot {
 	 * Y-axis
 	 * @return The angle in degrees
 	 */
-	public double AngleXY(Skeleton.Joint origin, Skeleton.Joint measured, boolean mirrored) {
+	public double AngleXY(Skeleton.Joint origin, Skeleton.Joint measured, boolean mirrored)
+	{
 		return Math.toDegrees(MathUtils.atan2(measured.getY() - origin.getY(),
 				(mirrored) ? (origin.getX() - measured.getX()) : (measured.getX() - origin.getX())));
 	}
@@ -244,7 +270,8 @@ public class BCHSBot extends IterativeRobot {
 	 * Y-axis
 	 * @return The angle in degrees
 	 */
-	public double AngleXY2(double OriginX, double OriginY, Skeleton.Joint measured, boolean mirrored) {
+	public double AngleXY2(double OriginX, double OriginY, Skeleton.Joint measured, boolean mirrored)
+	{
 		return Math.toDegrees(MathUtils.atan2(measured.getY() - OriginY,
 				(mirrored) ? (OriginX - measured.getX()) : (measured.getX() - OriginX)));
 	}
@@ -266,7 +293,8 @@ public class BCHSBot extends IterativeRobot {
 	 * @param tolerance
 	 * @return True if the z-coordinates are within tolerance
 	 */
-	public boolean InSameZPlane(Skeleton.Joint origin, Skeleton.Joint measured, double tolerance) {
+	public boolean InSameZPlane(Skeleton.Joint origin, Skeleton.Joint measured, double tolerance)
+	{
 		return Math.abs(measured.getZ() - origin.getZ()) < tolerance;
 	}
 
@@ -281,7 +309,8 @@ public class BCHSBot extends IterativeRobot {
 	 * @param outputMax The maximum value of the output range
 	 * @return The output value scaled and constrained to the output range
 	 */
-	public double CoerceToRange(double input, double inputMin, double inputMax, double outputMin, double outputMax) {
+	public double CoerceToRange(double input, double inputMin, double inputMax, double outputMin, double outputMax)
+	{
 		/*
 		 * Determine the center of the input range and output range
 		 */
@@ -307,9 +336,9 @@ public class BCHSBot extends IterativeRobot {
 	/*
 	 * Sets speed to Jaguars 1 through -1 only
 	 */
-	public void setSpeed(double speedleft, double speedright) {
+	public void setSpeed(double speedleft, double speedright)
+	{
 		leftSide.set(speedleft * 0.75);
 		rightSide.set(-speedright * 0.75);
-
 	}
 }

@@ -7,33 +7,47 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
-
+// dont forget to change port nums hocketstick,rbotdrive
 public class BCHSBot extends IterativeRobot
-{
+{		//camera declrations
 	AxisCamera camera;
 	ParticleAnalysisReport[] particles;
 	ParticleAnalysisReport first;
 	int firstsWidth, pixelCentre, close;
 	AnalogChannel ultraSonic;
+
+	
+	// driving decleration 
 	RobotDrive drive;
 	Joystick driveJoystick;
 	double distance;
-	double speed;
-	double RPM;
+	
+	
+	// lift jag declerations
 	BCHSLauncher launcher; 
 	BCHSRetrieval retrieval;
 	BCHSBundle motorBundle;
+	
+	
+	//hockeystick declerations
+	BCHSHockey hockeySticks;
+
+	
 
 	public void robotInit()
-	{
+	{	
 		camera = AxisCamera.getInstance();
+
 		drive = new RobotDrive(1, 3, 2, 4);
 		driveJoystick = new Joystick(1);
 		ultraSonic = new AnalogChannel(1);
+
 		launcher = new BCHSLauncher(0, 0, 1, 2);
 		retrieval = new BCHSRetrieval(3);
 		motorBundle = new BCHSBundle(1,2);
 		launcher.encoder.setDistancePerPulse(0.00237);
+		
+		hockeySticks = new BCHSHockey(5,1,2,3);
 	}
 
 	public void autonomousPeriodic()
@@ -72,10 +86,27 @@ public class BCHSBot extends IterativeRobot
 	}
 
 	public void teleopPeriodic()
-	{
+	{	//retrival system
 		drive.arcadeDrive(driveJoystick);
-		retrieval.liftJag.set(speed);
-		launcher.launcherPID.setSetpoint(RPM);
-		launcher.motorBundle.set(speed);
+
+		
+		if (driveJoystick.getRawButton(11))
+			hockeySticks.set(0.2);
+		else if (driveJoystick.getRawButton(10))
+			hockeySticks.set(-0.2);
+		else
+			hockeySticks.set(0);
+		
+		//bchsLauncher
+		if (driveJoystick.getTrigger())
+			launcher.set(0.7);
+		else
+			launcher.set(0.0);
+		
+		//bchsRetrieval
+		if (driveJoystick.getRawButton(3))
+			retrieval.set(0.5);
+		else
+			retrieval.set(0.0);
 	}
 }

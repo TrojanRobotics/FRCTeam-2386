@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
+import edu.wpi.first.wpilibj.Timer;
 
 public class BCHSBot extends IterativeRobot
 {	
@@ -79,9 +80,20 @@ public class BCHSBot extends IterativeRobot
 	public void autonomousPeriodic() 
 	{
 		particles = BCHSCamera.getParticles(camera, new int[]{0, 0, 0, 0, 0, 0});
-		for (int i = 0; i < particles.length; i++) {
+		for (int i = 0; i < particles.length; i++) 
+		{
 			System.out.println("Particle number " + i + " is " + particles[i]);
-		}
+		}	
+		leftPID.setSetpoint(-120);
+		rightPID.setSetpoint(120);
+		hockeySticks.set(0.75);
+		launcher.set(0.7);
+		Timer.delay(3.0);
+		retrieval.set(0.5);
+		Timer.delay(5.0);
+		leftPID.disable();
+		rightPID.disable();
+		retrieval.stop();
 	}
 
 	public void teleopPeriodic() 

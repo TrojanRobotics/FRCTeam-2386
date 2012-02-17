@@ -136,9 +136,9 @@ public class BCHSBot extends IterativeRobot
                             if(rightLegYZ < -110.0){
                                 launcher.set(0.7);
                             }
-                            /*else if (leftLegYZ < -110.0){
-                                hockey.set();
-                            }*/
+                            else if (leftLegYZ < -110.0){
+                                hockeySticks.set(0.5);
+                            }
                             if (RKneeAnkleYZ < -130.0){
                                 retrieval.set(0.75);
                                 //lcd.println(DriverStationLCD.Line.kMain6, 1, "Falcon Kick ");  
@@ -146,7 +146,10 @@ public class BCHSBot extends IterativeRobot
                             }
                             else{
                                 retrieval.set(0.0);
-                            }                  
+                            } 
+                            if (LKneeAnkleYZ < -130.0){
+                                hockeySticks.set(-0.50);
+                            }
                         }
                         else{
                             if (leftAngle < 180.0 && leftAngle > 0.0){
@@ -178,9 +181,10 @@ public class BCHSBot extends IterativeRobot
                             }
                             launcher.set(0.0);
                             retrieval.set(0.0);
+                            hockeySticks.set(0.0);
                     }
                 }
-               // Timer.delay(.01);   /* Delay 10ms to reduce proceessing load*/
+               Timer.delay(.01);   /* Delay 10ms to reduce proceessing load*/
                 
                 
 	}

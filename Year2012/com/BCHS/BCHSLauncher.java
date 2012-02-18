@@ -41,7 +41,7 @@ public class BCHSLauncher
 	 */
 	public void set(double speed)
 	{
-		motorBundle.set(speed);
+		motorBundle.set(-speed);
 	}
 	/**
 	 * Stop method for BCHSBundle.

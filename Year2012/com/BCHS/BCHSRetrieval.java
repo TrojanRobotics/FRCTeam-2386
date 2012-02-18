@@ -18,7 +18,7 @@ public class BCHSRetrieval
 	 */
 	public void set(double speed)
 	{
-		liftJag.set(speed);
+		liftJag.set(-speed);
 	}
 	/**
 	 * Stop method for retrieval.

@@ -18,19 +18,20 @@ public class BCHSKinect {
     BCHSLauncher launcher;
     BCHSRetrieval retrieval;
     BCHSHockey hockeySticks;
+    double leftAxis = 0.0;
+    double rightAxis = 0.0;
+    double leftAngle, rightAngle, headAngle, rightLegAngle, leftLegAngle, rightLegYZ, leftLegYZ, EtoWLeft, WtoHLeft, leftAngleYZ, OriginGetY, OriginGetX, TheArrow, ForOrBackRight, ForOrBackLeft, HR, WR, HL, WL, rar, ror, MaxForRight, MaxForLeft, MaxRevRight, MaxRevLeft, ZeroRight, ZeroLeft, inR, inL, Nothing, Happened, Fail, Ure, RKneeAnkleYZ, LKneeAnkleYZ;
 
     BCHSKinect(BCHSBundle leftSide, BCHSBundle rightSide, BCHSLauncher plauncher, BCHSRetrieval pretrieval, BCHSHockey LRHockeysticks) {
         xleftSide = leftSide;
         xrightSide = rightSide;
-        launcher    = plauncher;
-	retrieval = pretrieval; 
+        launcher = plauncher;
+        retrieval = pretrieval;
         hockeySticks = LRHockeysticks;
     }
 
     public void kinectDrive(Kinect kinect) {
-        double leftAxis = 0.0;
-        double rightAxis = 0.0;
-	double leftAngle, rightAngle, headAngle, rightLegAngle, leftLegAngle, rightLegYZ, leftLegYZ, EtoWLeft, WtoHLeft, leftAngleYZ, OriginGetY, OriginGetX, TheArrow, ForOrBackRight, ForOrBackLeft, HR, WR, HL, WL, rar, ror, MaxForRight, MaxForLeft, MaxRevRight, MaxRevLeft, ZeroRight, ZeroLeft, inR, inL, Nothing, Happened, Fail, Ure, RKneeAnkleYZ, LKneeAnkleYZ;
+
 
         if (kinect.getSkeleton().GetTrackState() == Skeleton.tTrackState.kTracked) {
             Ure = kinect.getSkeleton().GetSpine().getY();

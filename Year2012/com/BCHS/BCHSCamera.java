@@ -1,5 +1,7 @@
 package Year2012.com.BCHS;
 
+import edu.wpi.first.wpilibj.AnalogChannel;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
@@ -10,51 +12,61 @@ import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 
 public class BCHSCamera
 {
-	public static ParticleAnalysisReport[] getParticles(AxisCamera camera, int[] imageValues)
+	static AxisCamera camera;
+	ParticleAnalysisReport[] orderedParticles;
+	ParticleAnalysisReport first;
+	int firstsWidth, pixelCentre, close;
+	AnalogChannel ultraSonic;
+	ParticleAnalysisReport largestParticle;
+	Relay relay;
+	
+	public BCHSCamera ()
+	{
+		camera = AxisCamera.getInstance();
+		camera.writeBrightness(100);
+		relay.setDirection(Relay.Direction.kReverse);
+	}
+	
+	public void getLargestParticle(int[] imageValues)
 	{
 		try
 		{
+			relay.set(Relay.Value.kOn);
 			ColorImage colorImage = camera.getImage();
+			relay.set(Relay.Value.kOff);
 			BinaryImage binaryImage = colorImage.thresholdHSI(imageValues[0],imageValues[1],imageValues[2],imageValues[3],imageValues[4],imageValues[5]);
 			colorImage.free();
 			
-			ParticleAnalysisReport[] orderedParticles = binaryImage.getOrderedParticleAnalysisReports();
+			orderedParticles = binaryImage.getOrderedParticleAnalysisReports();
 			binaryImage.free();
-			ParticleAnalysisReport first = orderedParticles[0];
-			int pixelCentre = camera.getResolution().width / 2;
-		
-			return orderedParticles;
+			largestParticle = orderedParticles[0];		
 		}
 		
 		catch (AxisCameraException ex)
 		{
 			ex.printStackTrace();
-			return null;
 		}
 		catch (NIVisionException ex)
 		{
 			ex.printStackTrace();
-			return null;
 		}
 	}
 	
-	public static String leftOrRight(ParticleAnalysisReport first, int pixelCentre){
-		
-		if (first.center_mass_x < pixelCentre + 10) 
+	public String leftOrRight(){
+		if (largestParticle.center_mass_x < camera.getResolution().width/2 + 10) 
 		{
 			return "right";
-		} 
+		}
 			
-		else if (first.center_mass_x > pixelCentre - 10) 
+		else if (largestParticle.center_mass_x > camera.getResolution().width/2 - 10) 
 		{
 			return "left";
 		} 
 		
-		else if (first.center_mass_x >= pixelCentre + 10 || first.center_mass_x <= pixelCentre - 10) 
+		else if (largestParticle.center_mass_x >= camera.getResolution().width/2 + 10 || largestParticle.center_mass_x <= camera.getResolution().width/2 - 10) 
 		{
-			return "S'all good.";
+			return "centre";
 		}
 		return "nil, yo.";
 	}
-
 }

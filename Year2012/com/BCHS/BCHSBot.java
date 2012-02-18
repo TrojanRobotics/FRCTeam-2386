@@ -79,7 +79,15 @@ public class BCHSBot extends IterativeRobot {
 
 		if (ds.getDigitalIn(1))
 		{
+			String side = cam.leftOrRight();
 			cam.getLargestParticle(new int[]{1,2,3,4,5,6});
+			if (side == "left"){
+				leftSide.set(-1.0);
+			} else if (side == "right"){
+				rightSide.set(-1.0);
+			} else if (side == "centre"){
+				
+			}
 		}
 					
 		else if (ds.getDigitalIn(2))

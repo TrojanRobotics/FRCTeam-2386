@@ -27,8 +27,6 @@ public class BCHSCamera
 		relay.setDirection(Relay.Direction.kReverse);
 	}
 	
-	
-	
 	public void getLargestParticle(int[] imageValues)
 	{
 		try

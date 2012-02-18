@@ -25,7 +25,14 @@ public class BCHSHockey
 	 */
 	public void set(double speed)
 	{
-		driveJag.set(speed);
+		if (topLimit.get() == true && (speed) > 0)
+			driveJag.set(speed);
+		else
+			driveJag.set(0.0);
+		if (bottomLimit.get() == true && (speed) < 0)
+			driveJag.set(speed);
+		else
+			driveJag.set(0.0);
 	}
 	/**
 	 * Stop method for hockey sticks.

@@ -1,4 +1,4 @@
-ackage Year2012.com.BCHS;
+package Year2012.com.BCHS;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.Relay;

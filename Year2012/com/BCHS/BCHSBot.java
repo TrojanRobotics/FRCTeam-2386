@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.Timer;
 public class BCHSBot extends IterativeRobot {
 	//camera declrations
 
-	AxisCamera camera;
 	ParticleAnalysisReport[] particles;
 	ParticleAnalysisReport first;
 	int firstsWidth, pixelCentre, close;
@@ -30,6 +29,7 @@ public class BCHSBot extends IterativeRobot {
 	BCHSLauncher launcher;
 	BCHSRetrieval retrieval;
 	BCHSHockey hockeySticks;
+	BCHSCamera cam;
 	//kinect
 	Kinect kinect;
 	double leftAngle, rightAngle, headAngle, rightLegAngle, leftLegAngle, rightLegYZ, leftLegYZ, EtoWLeft, WtoHLeft, leftAngleYZ, OriginGetY, OriginGetX, TheArrow, ForOrBackRight, ForOrBackLeft, HR, WR, HL, WL, rar, ror, MaxForRight, MaxForLeft, MaxRevRight, MaxRevLeft, ZeroRight, ZeroLeft, inR, inL, Nothing, Happened, Fail, Ure, RKneeAnkleYZ, LKneeAnkleYZ;
@@ -40,10 +40,6 @@ public class BCHSBot extends IterativeRobot {
 	boolean run = true;
 
 	public void robotInit() {
-		if (ds.getDigitalIn(1)) {
-			camera = AxisCamera.getInstance();
-		}
-
 		leftSide = new BCHSBundle(1, 2);
 		rightSide = new BCHSBundle(3, 4);
 		drive = new RobotDrive(leftSide, rightSide);
@@ -83,11 +79,9 @@ public class BCHSBot extends IterativeRobot {
 
 		if (ds.getDigitalIn(1))
 		{
-			particles = BCHSCamera.getParticles(camera, new int[]{0, 0, 0, 0, 0, 0});
-			for (int i = 0; i < particles.length; i++) {
-				System.out.println("Particle number " + i + " is " + particles[i]);
-			}
+			cam.getLargestParticle(new int[]{1,2,3,4,5,6});
 		}
+					
 		else if (ds.getDigitalIn(2))
 		{
 			leftPID.setSetpoint(-120);

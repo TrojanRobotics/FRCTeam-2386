@@ -13,60 +13,63 @@ import edu.wpi.first.wpilibj.Timer;
 public class BCHSBot extends IterativeRobot
 {
 	AnalogChannel ultraSonic;
-	// driving decleration 
-	RobotDrive drive;
+	
 	BCHSBundle leftSide, rightSide;
-	Joystick driveJoystick, secondaryJoystick;
-	// functional mechanisms
+	BCHSCamera cam;
+	BCHSHockey hockeySticks;
+	BCHSKinect xKinect;
 	BCHSLauncher launcher;
 	BCHSRetrieval retrieval;
-	BCHSHockey hockeySticks;
-	BCHSCamera cam;
-	//kinect
-	Kinect kinect;
-	BCHSKinect xKinect;
+	
 	DriverStation ds = DriverStation.getInstance();
+	
 	Encoder leftEncoder, rightEncoder;
+	
+	Joystick driveJoystick, secondaryJoystick;
+	
+	Kinect kinect;
+	
 	PIDController leftPID, rightPID;
-	double kp, ki, kd;
-	boolean run = false;
-
+	
+	RobotDrive drive;
+	
+	
 	public void robotInit()
 	{
-		leftSide = new BCHSBundle(1, 2);
-		rightSide = new BCHSBundle(3, 4);
-		
-		drive = new RobotDrive(leftSide, rightSide);
-		driveJoystick = new Joystick(1);
-		secondaryJoystick = new Joystick(2);
-		ultraSonic = new AnalogChannel(1);
-
-		launcher = new BCHSLauncher(5, 6, 7, 8);
-		retrieval = new BCHSRetrieval(5);
-		launcher.encoder.setDistancePerPulse(0.0237);
-
-		hockeySticks = new BCHSHockey(6, 8, 9);
-
+		//Control Inputs
+		driveJoystick = new Joystick(Config.MAIN_JOYSTICK);
+		secondaryJoystick = new Joystick(Config.SECONDARY_JOYSTICK);
 		kinect = Kinect.getInstance();
-		xKinect = new BCHSKinect(leftSide, rightSide, launcher, retrieval, hockeySticks);
 		
-		kp = 0.3;
-		ki = 0.0;
-		kd = 0.0;
+		//Functional Mechanisms
+		launcher = new BCHSLauncher(Config.SENCODER[0], Config.SENCODER[1], Config.SHOOTER[0], Config.SHOOTER[1]);
+		retrieval = new BCHSRetrieval(Config.RETRIEVE);
+		hockeySticks = new BCHSHockey(Config.HOCKEY, Config.TLIMIT_SWITCH, Config.BLIMIT_SWITCH);
 
-		leftEncoder = new Encoder(3, 4);
-		rightEncoder = new Encoder(1, 2);
-		leftEncoder.setDistancePerPulse(0.0237);
-		rightEncoder.setDistancePerPulse(0.0237);
+		//Sensors
+		leftEncoder = new Encoder(Config.LENCODER[0], Config.LENCODER[1]);
+		rightEncoder = new Encoder(Config.RENCODER[0], Config.RENCODER[1]);
+		ultraSonic = new AnalogChannel(Config.ULTRASONIC);
+		
+		leftEncoder.setDistancePerPulse(Config.LE_DPP);
+		rightEncoder.setDistancePerPulse(Config.RE_DPP);
+		launcher.encoder.setDistancePerPulse(Config.SE_DPP);
+		
 		leftEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kDistance);
 		rightEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kDistance);
+		launcher.encoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kRate);
+		
+		//Driving Systems
+		leftSide = new BCHSBundle(Config.LDRIVE[0], Config.LDRIVE[1]);
+		rightSide = new BCHSBundle(Config.RDRIVE[0], Config.RDRIVE[1]);
+		drive = new RobotDrive(leftSide, rightSide);
+		xKinect = new BCHSKinect(leftSide, rightSide, launcher, retrieval, hockeySticks);
+		leftPID = new PIDController(Config.PID[0], Config.PID[1], Config.PID[2], leftEncoder, leftSide);
+		rightPID = new PIDController(Config.PID[0], Config.PID[1], Config.PID[2], rightEncoder, rightSide);
+		
+		//Starting
 		rightEncoder.start();
 		leftEncoder.start();
-
-		leftPID = new PIDController(kp, ki, kd, leftEncoder, leftSide);
-		rightPID = new PIDController(kp, ki, kd, rightEncoder, rightSide);
-		//leftPID.enable();
-		//rightPID.enable();
 	}
 
 	public void autonomousPeriodic()
@@ -77,22 +80,11 @@ public class BCHSBot extends IterativeRobot
 			cam.getLargestParticle(new int[]{1, 2, 3, 4, 5, 6});
 			
 			if (side.equalsIgnoreCase("left"))
-			{
-				leftSide.set(-1.0);
-				rightSide.set(0.0);
-			}
+				drive.drive(1.0, -1.0);
 			else if (side.equalsIgnoreCase("right"))
-			{
-				leftSide.set(0.0);
-				rightSide.set(-1.0);
-			}
+				drive.drive(1.0, 1.0);
 			else if (side.equalsIgnoreCase("center"))
-			{
-				leftSide.set(0.0);
-				rightSide.set(0.0);
-			}
-			
-			
+				drive.drive(0.0, 0.0);
 		}
 		else if (ds.getDigitalIn(2))
 		{
@@ -103,30 +95,31 @@ public class BCHSBot extends IterativeRobot
 			Timer.delay(3.0);
 			retrieval.set(0.5);
 			Timer.delay(5.0);
-			leftPID.disable();
-			rightPID.disable();
 			retrieval.stop();
 		}
 		else if (ds.getDigitalIn(3))
 		{
-			//kinect Code
-			System.out.println("Started Kinect");
 			xKinect.kinectDrive(kinect);
 		}
+	}
+	
+	public void teleopInit()
+	{
+		leftPID.disable();
+		rightPID.disable();
 	}
 
 	public void teleopPeriodic()
 	{
-		drive.arcadeDrive(driveJoystick);
-
-		if (run)
+		if (Config.TESTING)
 		{
 			leftPID.setSetpoint(12);
 			rightPID.setSetpoint(12);
-			run = false;
 		} 
 		else 
 		{
+			drive.arcadeDrive(driveJoystick);
+			
 			if (driveJoystick.getRawButton(11))
 				hockeySticks.set(0.75);
 			else if (driveJoystick.getRawButton(10))
@@ -134,12 +127,10 @@ public class BCHSBot extends IterativeRobot
 			else
 				hockeySticks.set(0);
 
-			//bchsLauncher 
 			if (driveJoystick.getTrigger())
 				launcher.set(0.7);
 			else
 				launcher.set(0.0);
-			//bchsRetrieval 
 
 			if (driveJoystick.getRawButton(3))
 				retrieval.set(0.75);

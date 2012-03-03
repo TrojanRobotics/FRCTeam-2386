@@ -1,5 +1,6 @@
 package Year2012.com.BCHS;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 
@@ -10,6 +11,7 @@ public class BCHSLauncher
 	PIDController launcherPID;
 	double kp, ki, kd;
 	BCHSBundle motorBundle;
+	DigitalInput limit;
 	
 	/**
 	 * Creates a Launcher object.
@@ -20,20 +22,27 @@ public class BCHSLauncher
 	 */
 	public BCHSLauncher(int aChannel, int bChannel, int channelOne, int channelTwo)
 	{
+		kp = 0.15;
+		ki = 0.0;
+		kd = 0.0;
+		
 		encoder = new Encoder(aChannel, bChannel);
-		motorBundle = new BCHSBundle(channelOne, channelTwo);
-		launcherPID = new PIDController(kp, ki, kd, encoder, motorBundle);
-		encoder.start();
 		encoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kRate);
+		encoder.setDistancePerPulse(Config.SE_DPP);
+		encoder.start();
+		
+		motorBundle = new BCHSBundle(channelOne, channelTwo);
+		launcherPID = new PIDController(kp, ki, kd, encoder, motorBundle);		
+		limit = new DigitalInput(Config.RLIMIT_SWITCH);
 	}
 	/**
 	 * A method to set RPM
 	 * @param RPM Setpoint for PID.
 	 */
-	public void setRPM(double RPM)  //Set RPM of Launcher
+	public void setRPM(double RPM)
 	{
-		launcherPID.setSetpoint(RPM);
 		launcherPID.enable();
+		launcherPID.setSetpoint(RPM);
 	}
 	/**
 	 * Set method for BCHSBundle
@@ -50,5 +59,13 @@ public class BCHSLauncher
 	{
 		motorBundle.stop();
 		launcherPID.disable();
+	}
+	
+	public boolean isReady()
+	{
+		if (limit.get())
+			return false;
+		else
+			return true;
 	}
 }

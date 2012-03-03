@@ -37,14 +37,21 @@ public interface Config
 	
 	static final int TLIMIT_SWITCH = 8;
 	static final int BLIMIT_SWITCH = 9;
+	static final int RLIMIT_SWITCH = 10;
+	
+	/**
+	 * Relay Constants
+	 */
+	static final int LIGHTS = 1;
 	
 	/**
 	 * Value Constants
 	 */
-	static final double[] PID = { 0.0, 0.0, 0.0 };
-	static final double[] CAM_HSL = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+	static final double[] PID = { 1.0, 0.4, 0.235 };
+	static final int[] CAM_HSL = { 0, 23, 31, 142, 73, 255 };
+	static final int[] CAM_RGB = { 191, 255, 129, 229, 117, 190 };
 	
-	static final double LE_DPP = 0.0;
-	static final double RE_DPP = 0.0;
-	static final double SE_DPP = 0.0;
+	static final double LE_DPP = 0.0190;
+	static final double RE_DPP = 0.0240;
+	static final double SE_DPP = 0.18;
 }

@@ -24,6 +24,7 @@ public class BCHSCamera
 	{
 		camera = AxisCamera.getInstance();
 		camera.writeBrightness(100);
+		relay = new Relay(Config.LIGHTS);
 		relay.setDirection(Relay.Direction.kReverse);
 	}
 	
@@ -68,5 +69,15 @@ public class BCHSCamera
 			return "centre";
 		}
 		return "nil, yo.";
+		
 	}
+	
+	public void lightsOn(boolean isOn)
+	{
+		if (isOn)
+			relay.set(Relay.Value.kOn);
+		else
+			relay.set(Relay.Value.kOff);
+	}
+	
 }

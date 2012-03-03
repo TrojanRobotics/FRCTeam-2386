@@ -2,6 +2,7 @@ package Year2012.com.BCHS;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
@@ -14,14 +15,16 @@ public class BCHSBot extends IterativeRobot
 {
 	AnalogChannel ultraSonic;
 	
-	BCHSBundle leftSide, rightSide;
+	//BCHSBundle leftSide, rightSide;
 	BCHSCamera cam;
 	BCHSHockey hockeySticks;
 	BCHSKinect xKinect;
 	BCHSLauncher launcher;
 	BCHSRetrieval retrieval;
+	BCHSChasis chasis;
 	
 	DriverStation ds = DriverStation.getInstance();
+	DriverStationLCD dsLCD = DriverStationLCD.getInstance();
 	
 	Encoder leftEncoder, rightEncoder;
 	
@@ -46,30 +49,24 @@ public class BCHSBot extends IterativeRobot
 		retrieval = new BCHSRetrieval(Config.RETRIEVE);
 		hockeySticks = new BCHSHockey(Config.HOCKEY, Config.TLIMIT_SWITCH, Config.BLIMIT_SWITCH);
 
-		//Sensors
-		leftEncoder = new Encoder(Config.LENCODER[0], Config.LENCODER[1]);
-		rightEncoder = new Encoder(Config.RENCODER[0], Config.RENCODER[1]);
-		ultraSonic = new AnalogChannel(Config.ULTRASONIC);
+		//Chasis
+		chasis = new BCHSChasis(Config.LENCODER[0], Config.LENCODER[1], Config.RENCODER[0], Config.RENCODER[1], Config.ULTRASONIC, Config.LDRIVE, Config.RDRIVE);
+		chasis.setDistance(Config.LE_DPP);
 		
-		leftEncoder.setDistancePerPulse(Config.LE_DPP);
-		rightEncoder.setDistancePerPulse(Config.RE_DPP);
+		
+		//Launcher
 		launcher.encoder.setDistancePerPulse(Config.SE_DPP);
-		
-		leftEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kDistance);
-		rightEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kDistance);
 		launcher.encoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kRate);
 		
 		//Driving Systems
-		leftSide = new BCHSBundle(Config.LDRIVE[0], Config.LDRIVE[1]);
-		rightSide = new BCHSBundle(Config.RDRIVE[0], Config.RDRIVE[1]);
-		drive = new RobotDrive(leftSide, rightSide);
-		xKinect = new BCHSKinect(leftSide, rightSide, launcher, retrieval, hockeySticks);
-		leftPID = new PIDController(Config.PID[0], Config.PID[1], Config.PID[2], leftEncoder, leftSide);
-		rightPID = new PIDController(Config.PID[0], Config.PID[1], Config.PID[2], rightEncoder, rightSide);
+		//leftSide = new BCHSBundle(Config.LDRIVE[0], Config.LDRIVE[1]);
+		//rightSide = new BCHSBundle(Config.RDRIVE[0], Config.RDRIVE[1]);
+		drive = new RobotDrive(chasis.leftSide, chasis.rightSide);
+		xKinect = new BCHSKinect(chasis.leftSide, chasis.rightSide, launcher, retrieval, hockeySticks);
+		
 		
 		//Starting
-		rightEncoder.start();
-		leftEncoder.start();
+		//sensor.start();
 	}
 
 	public void autonomousPeriodic()
@@ -127,14 +124,25 @@ public class BCHSBot extends IterativeRobot
 			else
 				hockeySticks.set(0);
 
-			if (driveJoystick.getTrigger())
-				launcher.set(0.7);
+			if (secondaryJoystick.getTrigger())
+				launcher.set(1.0);
+			else if (secondaryJoystick.getRawButton(2))
+				launcher.set(0.75);
+			else if (secondaryJoystick.getRawButton(3))
+				launcher.set(0.5);
+			else if (secondaryJoystick.getRawButton(4))
+				launcher.set(0.25);
 			else
 				launcher.set(0.0);
-
-			if (driveJoystick.getRawButton(3))
+			
+			if (secondaryJoystick.getRawButton(9))
+				cam.lightsOn(true);
+			else
+				cam.lightsOn(false);
+			
+			if (secondaryJoystick.getRawButton(3))
 				retrieval.set(0.75);
-			else if (driveJoystick.getRawButton(2))
+			else if (secondaryJoystick.getRawButton(2))
 				retrieval.set(-0.75);
 			else
 				retrieval.set(0.0);

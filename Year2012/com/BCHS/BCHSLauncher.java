@@ -2,6 +2,7 @@ package Year2012.com.BCHS;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 
 public class BCHSLauncher 
@@ -10,6 +11,7 @@ public class BCHSLauncher
 	PIDController launcherPID;
 	double kp, ki, kd;
 	BCHSBundle motorBundle;
+	DigitalInput conveyorLimit;
 	
 	/**
 	 * Creates a Launcher object.
@@ -40,9 +42,16 @@ public class BCHSLauncher
 	 * @param speed Sets speed for PID bundle.
 	 */
 	public void set(double speed)
-	{
-		motorBundle.set(-speed);
+	{	
+		motorBundle.set(-speed);	
 	}
+	public boolean isReady()
+	{
+		if (conveyorLimit.get() == true)
+			return false;
+		else
+			return true;
+	}	
 	/**
 	 * Stop method for BCHSBundle.
 	 */

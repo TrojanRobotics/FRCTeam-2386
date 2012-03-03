@@ -1,0 +1,12 @@
+ leftSide.set(-0.8);
++                       rightSide.set(0.8);
++                       hockeySticks.set(0.5);
++                       Timer.delay(5.0);
++                       leftSide.stop();
++                       rightSide.stop();
++                       launcher.set(0.7);
++                       Timer.delay(3.0);
++                       retrieval.set(0.5);
++                       Timer.delay(5.0);
++                       retrieval.stop();
+

@@ -1,17 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package Year2012.com.BCHS;
 
-import edu.wpi.first.wpilibj.Skeleton;
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.Kinect;
+import edu.wpi.first.wpilibj.Skeleton;
 
-/**
- *
- * @author Robotic2
- */
 public class BCHSKinect {
 
     BCHSBundle xleftSide, xrightSide;

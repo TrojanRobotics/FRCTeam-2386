@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Relay;
 
-
 public class BCHSLauncher 
 {
 	Encoder encoder;
@@ -14,6 +13,7 @@ public class BCHSLauncher
 	BCHSBundle motorBundle;
 	DigitalInput limit;
 	Relay relay;
+	
 	/**
 	 * Creates a Launcher object.
 	 * @param aChannel The "a" channel for the encoder.

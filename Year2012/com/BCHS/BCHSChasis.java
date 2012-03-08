@@ -1,19 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package Year2012.com.BCHS;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.Ultrasonic;
 
-/**
- *
- * @author nickmcguire
- */
 public class BCHSChasis
 {
 	BCHSBundle leftSide, rightSide;
@@ -37,8 +27,6 @@ public class BCHSChasis
 		
 		leftSidePID = new PIDController(0.0, 0.0, 0.0, leftEncoder, this.leftSide);
 		rightSidePID = new PIDController(0.0, 0.0, 0.0, rightEncoder, this.rightSide);
-		
-		
 	}
 	
 	public void set(double speed)

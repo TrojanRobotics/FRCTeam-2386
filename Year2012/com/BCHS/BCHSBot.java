@@ -2,17 +2,9 @@ package Year2012.com.BCHS;
 
 import com.sun.squawk.util.MathUtils;
 //import edu.wpi.first.wpilibj.AnalogChannel;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStationLCD;
-//import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
-//import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.Kinect;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.Relay.Value;
 //import edu.wpi.first.wpilibj.SensorBase;
-import edu.wpi.first.wpilibj.Timer;
 //import edu.wpi.first.wpilibj.camera.AxisCameraException;
 //import edu.wpi.first.wpilibj.image.NIVisionException;
 //import edu.wpi.first.wpilibj.networktables.NetworkTable;
@@ -45,12 +37,19 @@ public class BCHSBot extends IterativeRobot
 	
 	//PIDController leftPID, rightPID;
 	
-	RobotDrive drive;
+	//RobotDrive drive;
 	
 	boolean test = true;
 	
+	boolean autoOnce = true;
+	
+	
+	
 	public void robotInit()
 	{
+		
+		
+		
 		//Control Inputs
 		driveJoystick = new Joystick(Config.MAIN_JOYSTICK);
 		secondaryJoystick = new Joystick(Config.SECONDARY_JOYSTICK);
@@ -78,7 +77,7 @@ public class BCHSBot extends IterativeRobot
 		//rightSide = new BCHSBundle(Config.RDRIVE[0], Config.RDRIVE[1]);
 		
 		chasis = new BCHSChasis(Config.LENCODER[0], Config.LENCODER[1], Config.RENCODER[0], Config.RENCODER[1], Config.ULTRASONIC, Config.LDRIVE, Config.RDRIVE);
-		drive = new RobotDrive(chasis.leftSide, chasis.rightSide);
+		//drive = new RobotDrive(chasis.leftSide, chasis.rightSide);
 		xKinect = new BCHSKinect(chasis.leftSide, chasis.rightSide, launcher, retrieval, hockeySticks);
 		//leftPID = new PIDController(Config.PID[0], Config.PID[1], Config.PID[2], leftEncoder, leftSide);
 		//rightPID = new PIDController(Config.PID[0], Config.PID[1], Config.PID[2], rightEncoder, rightSide);
@@ -100,11 +99,15 @@ public class BCHSBot extends IterativeRobot
 		SmartDashboard.putDouble("CheckDR", chasis.rightSidePID.getD());
 		
 		SmartDashboard.putDouble("TimerDelay", DELAY);
+		
+		dsLCD.println(DriverStationLCD.Line.kMain6, 1, "V1");
+		dsLCD.updateLCD();
 	}
 	
 	public void disabledPeriodic()
 	{
 		test = true;
+		autoOnce = true;
 		
 		try {
 			chasis.leftSidePID.setPID(SmartDashboard.getDouble("PD"), SmartDashboard.getDouble("ID"), SmartDashboard.getDouble("DD"));
@@ -124,28 +127,35 @@ public class BCHSBot extends IterativeRobot
 		
 		SmartDashboard.putString("GameMode", "Disabled");
 		
+		
+	}
+	
+	public void autonomousInit()
+	{
+		//drive.setExpiration(3.0);
 	}
 
 	public void autonomousPeriodic()
 	{
 		if (ds.getDigitalIn(1))
 		{
+			/*
 			String side = cam.leftOrRight();
-			cam.getLargestParticle(new int[]{1, 2, 3, 4, 5, 6});
+			//cam.getLargestParticle(new int[]{1, 2, 3, 4, 5, 6});
 			
 			if (side.equalsIgnoreCase("left"))
 				drive.drive(1.0, -1.0);
 			else if (side.equalsIgnoreCase("right"))
 				drive.drive(1.0, 1.0);
 			else if (side.equalsIgnoreCase("center"))
-				drive.drive(0.0, 0.0);
+				drive.drive(0.0, 0.0);*/
 		}
 		else if (ds.getDigitalIn(2))
 		{
 			//leftPID.setSetpoint(-120);
 			//rightPID.setSetpoint(120);
 			hockeySticks.set(0.75);
-			launcher.set(0.7);
+			launcher.set(0.50);
 			Timer.delay(3.0);
 			retrieval.set(0.5);
 			Timer.delay(5.0);
@@ -155,23 +165,43 @@ public class BCHSBot extends IterativeRobot
 		{
 			xKinect.kinectDrive(kinect);
 		}
-		else if (ds.getDigitalIn(4))
+		else if (ds.getDigitalIn(4) && autoOnce)
 		{
-			drive.drive(-0.75, 0.0);
-			//launcher.set(0.7);
-			//retrieval.set(0.8);
-			//hockeySticks.set(1.0);
-			Timer.delay(5000.0);
-			drive.drive(0.0, 0.0);
+			chasis.set(0.75);
+			hockeySticks.set(1.0);
+			Timer.delay(1.0);
+			chasis.stop();
+			Timer.delay(1.0);
+			launcher.set(0.45);
+			Timer.delay(1.5);
+			retrieval.set(0.8);
+			Timer.delay(1.25);
+			hockeySticks.stop();
+			Timer.delay(10.0);
+			launcher.stop();
+			retrieval.stop();
 			
+			
+			autoOnce = false;
+		}
+		else if (ds.getDigitalIn(5) && autoOnce)
+		{
+			launcher.set(0.75);
+			Timer.delay(1.0);
+			retrieval.set(0.8);
+			Timer.delay(5.0);
+			launcher.stop();
+			retrieval.stop();
+			autoOnce = false;
 		}
 	}
 	
 	public void teleopInit()
 	{
 		chasis.stop();
-		
 		SmartDashboard.putString("GameMode", "Init");
+		//drive.setExpiration(0.1);
+		
 	}
 
 	public void teleopPeriodic()
@@ -181,8 +211,8 @@ public class BCHSBot extends IterativeRobot
 		SmartDashboard.putInt("Right Encoder", chasis.rightEncoder.get());
 		SmartDashboard.putInt("Left Encoder", chasis.leftEncoder.get());
 			
-		SmartDashboard.putDouble("RightPID", chasis.rightEncoder.pidGet());
-		SmartDashboard.putDouble("LeftPID", chasis.leftEncoder.pidGet());
+		//SmartDashboard.putDouble("RightPID", chasis.rightEncoder.pidGet());
+		//SmartDashboard.putDouble("LeftPID", chasis.leftEncoder.pidGet());
 		
 		SmartDashboard.putDouble("Distance", BCHSLib.voltageToDistance(chasis.ultrasonic));
 		
@@ -214,12 +244,27 @@ public class BCHSBot extends IterativeRobot
 		} 
 		else 
 		{
-			drive.arcadeDrive(driveJoystick);
+			//drive.arcadeDrive(driveJoystick);
 			
-			if (driveJoystick.getRawButton(11))
-				hockeySticks.set(0.75);
-			else if (driveJoystick.getRawButton(10))
-				hockeySticks.set(-0.75);
+			//System.out.println(launcher.limit.get());
+			
+			dsLCD.println(DriverStationLCD.Line.kMain6, 1, ""+MathUtils.round(-launcher.encoder.getRate()));
+			
+			launcher.lightsOn();
+			
+			double x = driveJoystick.getX();
+			double y = driveJoystick.getY();
+			
+			x = BCHSLib.signSquare(x);
+			y = BCHSLib.signSquare(y);
+			
+			chasis.leftSide.set(BCHSLib.limitOutput(y - x));
+			chasis.rightSide.set(-BCHSLib.limitOutput(y + x));
+			
+			if (secondaryJoystick.getRawButton(11))
+				hockeySticks.set(-1.0);
+			else if (secondaryJoystick.getRawButton(10))
+				hockeySticks.set(1.0);
 			else
 				hockeySticks.set(0);
 
@@ -234,21 +279,17 @@ public class BCHSBot extends IterativeRobot
 			else
 				launcher.set(0.0);
 
-			if (secondaryJoystick.getRawButton(3))
+			if (secondaryJoystick.getRawButton(6))
 				retrieval.set(0.75);
-			else if (secondaryJoystick.getRawButton(2))
+			else if (secondaryJoystick.getRawButton(7))
 				retrieval.set(-0.75);
 			else
 				retrieval.set(0.0);
-			
-			if (secondaryJoystick.getRawButton(9))
-				cam.relay.set(Value.kOn);
-			else
-				cam.relay.set(Value.kOff);
-			
 			/*
 			if (driveJoystick.getRawButton(8))
 				cam.takePicture(Config.CAM_RGB);*/
+			
+			dsLCD.updateLCD();
 		}
 	}
 }

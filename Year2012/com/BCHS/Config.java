@@ -37,7 +37,7 @@ public interface Config
 	
 	static final int TLIMIT_SWITCH = 8;
 	static final int BLIMIT_SWITCH = 9;
-	static final int RLIMIT_SWITCH = 10;
+	static final int RLIMIT_SWITCH = 7;
 	
 	/**
 	 * Relay Constants

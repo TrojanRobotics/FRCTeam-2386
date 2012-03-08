@@ -18,16 +18,16 @@ public class BCHSCamera
 	int firstsWidth, pixelCentre, close;
 	AnalogChannel ultraSonic;
 	ParticleAnalysisReport largestParticle;
-	Relay relay;
+	//Relay relay;
 	
 	public BCHSCamera ()
 	{
-		camera = AxisCamera.getInstance();
-		camera.writeBrightness(50);
-		relay = new Relay(Config.LIGHTS);
-		relay.setDirection(Relay.Direction.kReverse);
+		//camera = AxisCamera.getInstance();
+		//camera.writeBrightness(50);
+		//relay = new Relay(Config.LIGHTS);
+		//relay.setDirection(Relay.Direction.kReverse);
 	}
-	
+	/*
 	public void getLargestParticle(int[] imageValues)
 	{
 		try
@@ -92,5 +92,5 @@ public class BCHSCamera
 		{
 			ex.printStackTrace();
 		}
-	}
+	}*/
 }

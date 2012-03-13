@@ -12,22 +12,22 @@ import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 
 public class BCHSCamera
 {
-	static AxisCamera camera;
+	AxisCamera camera;
 	ParticleAnalysisReport[] orderedParticles;
 	ParticleAnalysisReport first;
 	int firstsWidth, pixelCentre, close;
 	AnalogChannel ultraSonic;
 	ParticleAnalysisReport largestParticle;
-	Relay relay;
+	//Relay relay;
 	
 	public BCHSCamera ()
 	{
-		camera = AxisCamera.getInstance();
-		camera.writeBrightness(100);
-		relay = new Relay(Config.LIGHTS);
-		relay.setDirection(Relay.Direction.kReverse);
+		//camera = AxisCamera.getInstance();
+		//camera.writeBrightness(50);
+		//relay = new Relay(Config.LIGHTS);
+		//relay.setDirection(Relay.Direction.kReverse);
 	}
-	
+	/*
 	public void getLargestParticle(int[] imageValues)
 	{
 		try
@@ -53,7 +53,8 @@ public class BCHSCamera
 		}
 	}
 	
-	public String leftOrRight(){
+	public String leftOrRight()
+	{
 		if (largestParticle.center_mass_x < camera.getResolution().width/2 + 10) 
 		{
 			return "right";
@@ -69,15 +70,27 @@ public class BCHSCamera
 			return "centre";
 		}
 		return "nil, yo.";
-		
 	}
 	
-	public void lightsOn(boolean isOn)
+	public void takePicture(int[] values)
 	{
-		if (isOn)
-			relay.set(Relay.Value.kOn);
-		else
-			relay.set(Relay.Value.kOff);
-	}
-	
+		try
+		{
+			ColorImage img = camera.getImage();
+			BinaryImage bin = img.thresholdRGB(values[0], values[1], values[2], values[3], values[4], values[5]);
+			img.free();
+			bin = bin.removeSmallObjects(true, 1);
+			bin = bin.convexHull(true);
+			bin.write("/testMattISSIRI.png");
+			bin.free();
+		}
+		catch (NIVisionException ex)
+		{
+			ex.printStackTrace();
+		}
+		catch (AxisCameraException ex)
+		{
+			ex.printStackTrace();
+		}
+	}*/
 }

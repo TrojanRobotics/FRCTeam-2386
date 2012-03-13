@@ -1,21 +1,10 @@
 package Year2012.com.BCHS;
 
-import edu.wpi.first.wpilibj.AnalogChannel;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStationLCD;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.Kinect;
-import edu.wpi.first.wpilibj.Timer;
+import com.sun.squawk.util.MathUtils;
+import edu.wpi.first.wpilibj.*;
 
 public class BCHSBot extends IterativeRobot
 {
-	AnalogChannel ultraSonic;
-	
-	//BCHSBundle leftSide, rightSide;
 	BCHSCamera cam;
 	BCHSHockey hockeySticks;
 	BCHSKinect xKinect;
@@ -26,16 +15,12 @@ public class BCHSBot extends IterativeRobot
 	DriverStation ds = DriverStation.getInstance();
 	DriverStationLCD dsLCD = DriverStationLCD.getInstance();
 	
-	Encoder leftEncoder, rightEncoder;
-	
 	Joystick driveJoystick, secondaryJoystick;
 	
 	Kinect kinect;
 	
-	PIDController leftPID, rightPID;
-	
-	RobotDrive drive;
-	
+	boolean test = true;
+	boolean autoOnce = true;
 	
 	public void robotInit()
 	{
@@ -48,47 +33,37 @@ public class BCHSBot extends IterativeRobot
 		launcher = new BCHSLauncher(Config.SENCODER[0], Config.SENCODER[1], Config.SHOOTER[0], Config.SHOOTER[1]);
 		retrieval = new BCHSRetrieval(Config.RETRIEVE);
 		hockeySticks = new BCHSHockey(Config.HOCKEY, Config.TLIMIT_SWITCH, Config.BLIMIT_SWITCH);
-
-		//Chasis
+		cam = new BCHSCamera();
+		
+		//Drive Systems
 		chasis = new BCHSChasis(Config.LENCODER[0], Config.LENCODER[1], Config.RENCODER[0], Config.RENCODER[1], Config.ULTRASONIC, Config.LDRIVE, Config.RDRIVE);
-		chasis.setDistance(Config.LE_DPP);
-		
-		
-		//Launcher
-		launcher.encoder.setDistancePerPulse(Config.SE_DPP);
-		launcher.encoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kRate);
-		
-		//Driving Systems
-		//leftSide = new BCHSBundle(Config.LDRIVE[0], Config.LDRIVE[1]);
-		//rightSide = new BCHSBundle(Config.RDRIVE[0], Config.RDRIVE[1]);
-		drive = new RobotDrive(chasis.leftSide, chasis.rightSide);
 		xKinect = new BCHSKinect(chasis.leftSide, chasis.rightSide, launcher, retrieval, hockeySticks);
 		
+		dsLCD.println(DriverStationLCD.Line.kUser6, 1, "V1.1");
+		dsLCD.updateLCD();
+	}
+	
+	public void disabledPeriodic()
+	{
+		test = true;
+		autoOnce = true;
+	}
+	
+	public void autonomousInit()
+	{
 		
-		//Starting
-		//sensor.start();
 	}
 
 	public void autonomousPeriodic()
 	{
 		if (ds.getDigitalIn(1))
 		{
-			String side = cam.leftOrRight();
-			cam.getLargestParticle(new int[]{1, 2, 3, 4, 5, 6});
 			
-			if (side.equalsIgnoreCase("left"))
-				drive.drive(1.0, -1.0);
-			else if (side.equalsIgnoreCase("right"))
-				drive.drive(1.0, 1.0);
-			else if (side.equalsIgnoreCase("center"))
-				drive.drive(0.0, 0.0);
 		}
 		else if (ds.getDigitalIn(2))
 		{
-			leftPID.setSetpoint(-120);
-			rightPID.setSetpoint(120);
 			hockeySticks.set(0.75);
-			launcher.set(0.7);
+			launcher.set(0.50);
 			Timer.delay(3.0);
 			retrieval.set(0.5);
 			Timer.delay(5.0);
@@ -98,29 +73,65 @@ public class BCHSBot extends IterativeRobot
 		{
 			xKinect.kinectDrive(kinect);
 		}
+		else if (ds.getDigitalIn(4) && autoOnce)
+		{
+			chasis.set(0.75);
+			hockeySticks.set(1.0);
+			Timer.delay(1.0);
+			chasis.stop();
+			Timer.delay(1.0);
+			launcher.set(0.45);
+			Timer.delay(1.5);
+			retrieval.set(0.8);
+			Timer.delay(1.25);
+			hockeySticks.stop();
+			Timer.delay(10.0);
+			launcher.stop();
+			retrieval.stop();
+			autoOnce = false;
+		}
+		else if (ds.getDigitalIn(5) && autoOnce)
+		{
+			launcher.set(0.75);
+			Timer.delay(1.0);
+			retrieval.set(0.8);
+			Timer.delay(5.0);
+			launcher.stop();
+			retrieval.stop();
+			autoOnce = false;
+		}
 	}
 	
 	public void teleopInit()
 	{
-		leftPID.disable();
-		rightPID.disable();
+		chasis.stop();
 	}
 
 	public void teleopPeriodic()
-	{
-		if (Config.TESTING)
+	{	
+		if (Config.TESTING && test)
 		{
-			leftPID.setSetpoint(12);
-			rightPID.setSetpoint(12);
+			
 		} 
 		else 
 		{
-			drive.arcadeDrive(driveJoystick);
+			dsLCD.println(DriverStationLCD.Line.kMain6, 1, ""+MathUtils.round(-launcher.encoder.getRate()));
 			
-			if (driveJoystick.getRawButton(11))
-				hockeySticks.set(0.75);
-			else if (driveJoystick.getRawButton(10))
-				hockeySticks.set(-0.75);
+			launcher.lightsOn();
+			
+			double x = driveJoystick.getX();
+			double y = driveJoystick.getY();
+			
+			x = BCHSLib.signSquare(x);
+			y = BCHSLib.signSquare(y);
+			
+			chasis.leftSide.set(BCHSLib.limitOutput(y - x));
+			chasis.rightSide.set(-BCHSLib.limitOutput(y + x));
+			
+			if (secondaryJoystick.getRawButton(11))
+				hockeySticks.set(-1.0);
+			else if (secondaryJoystick.getRawButton(10))
+				hockeySticks.set(1.0);
 			else
 				hockeySticks.set(0);
 
@@ -134,18 +145,15 @@ public class BCHSBot extends IterativeRobot
 				launcher.set(0.25);
 			else
 				launcher.set(0.0);
-			
-			if (secondaryJoystick.getRawButton(9))
-				cam.lightsOn(true);
-			else
-				cam.lightsOn(false);
-			
-			if (secondaryJoystick.getRawButton(3))
+
+			if (secondaryJoystick.getRawButton(6))
 				retrieval.set(0.75);
-			else if (secondaryJoystick.getRawButton(2))
+			else if (secondaryJoystick.getRawButton(7))
 				retrieval.set(-0.75);
 			else
 				retrieval.set(0.0);
+			
+			dsLCD.updateLCD();
 		}
 	}
 }

@@ -1,12 +1,11 @@
 package Year2012.com.BCHS;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Jaguar;
 
-public class BCHSHockey 
+public class BCHSHockey
 {
 	Jaguar driveJag;
-	DigitalInput topLimit, bottomLimit;
+	LimitSwitch topLimit, bottomLimit;
 	
 	/**
 	 * Creates object for hockey sticks.
@@ -17,8 +16,8 @@ public class BCHSHockey
 	public BCHSHockey(int jagChannel, int topLimitChannel, int bottomLimitChannel)
 	{
 		driveJag = new Jaguar(jagChannel);
-		topLimit = new DigitalInput(topLimitChannel);
-		bottomLimit = new DigitalInput(bottomLimitChannel);	
+		topLimit = new LimitSwitch(topLimitChannel);
+		bottomLimit = new LimitSwitch(bottomLimitChannel);	
 	}
 	
 	/**

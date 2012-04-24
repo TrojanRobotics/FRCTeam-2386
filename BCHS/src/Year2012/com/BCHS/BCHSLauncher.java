@@ -1,6 +1,5 @@
 package Year2012.com.BCHS;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Relay;
@@ -11,7 +10,7 @@ public class BCHSLauncher
 	PIDController launcherPID;
 	double kp, ki, kd;
 	BCHSBundle motorBundle;
-	DigitalInput limit;
+	LimitSwitch limit;
 	Relay relay;
 	
 	/**
@@ -36,7 +35,7 @@ public class BCHSLauncher
 		
 		motorBundle = new BCHSBundle(channelOne, channelTwo);
 		launcherPID = new PIDController(kp, ki, kd, encoder, motorBundle);		
-		limit = new DigitalInput(Config.RLIMIT_SWITCH);
+		limit = new LimitSwitch(Config.RLIMIT_SWITCH, true);
 	}
 	/**
 	 * A method to set RPM
@@ -67,17 +66,17 @@ public class BCHSLauncher
 	public boolean isReady()
 	{
 		if (limit.get())
-			return false;
-		else
 			return true;
+		else
+			return false;
 	}
 		
-	public void lightsOn(){
-		if (limit.get() == false){
+	public void lightsOn()
+        {
+		if (isReady())
 			relay.set(Relay.Value.kOn);
-		} else{
+		else
 			relay.set(Relay.Value.kOff);
-		}
 	}
 	
 }

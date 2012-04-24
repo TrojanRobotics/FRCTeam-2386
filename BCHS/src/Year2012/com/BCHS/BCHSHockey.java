@@ -16,8 +16,8 @@ public class BCHSHockey
 	public BCHSHockey(int jagChannel, int topLimitChannel, int bottomLimitChannel)
 	{
 		driveJag = new Jaguar(jagChannel);
-		topLimit = new LimitSwitch(topLimitChannel);
-		bottomLimit = new LimitSwitch(bottomLimitChannel);	
+		topLimit = new LimitSwitch(topLimitChannel, true);
+		bottomLimit = new LimitSwitch(bottomLimitChannel, true);	
 	}
 	
 	/**
@@ -26,14 +26,14 @@ public class BCHSHockey
 	 */
 	public void set(double speed)
 	{	
-		if (!topLimit.get() && speed > 0)
-			driveJag.set(speed);
-		else if (!bottomLimit.get() && speed < 0)
-			driveJag.set(speed);
-		else if (topLimit.get() && bottomLimit.get())
-			driveJag.set(speed);
-		else
-			driveJag.set(0.0);
+            if (!topLimit.get() && !bottomLimit.get())
+                driveJag.set(speed);
+            else if (bottomLimit.get() && speed < 0)
+                driveJag.set(speed);
+            else if (topLimit.get() && speed > 0)
+                driveJag.set(speed);
+            else
+                driveJag.set(0.0);
 	}
 	
 	/**

@@ -25,6 +25,12 @@ public class SafetyHelper
 			threadExe.task();
 		}
 	}
+        private static SafetyHelper instance = new SafetyHelper();
+        
+        public static SafetyHelper getInstance()
+        {
+            return instance;
+        }
 	
 	Thread threadRun;
 	boolean thread_keepalive;
@@ -55,4 +61,5 @@ public class SafetyHelper
 	{
 		thread_keepalive = false;
 	}
+       
 }

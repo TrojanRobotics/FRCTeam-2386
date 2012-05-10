@@ -6,6 +6,7 @@ public class BCHSHockey
 {
 	Jaguar driveJag;
 	LimitSwitch topLimit, bottomLimit;
+        SafetyHelper safety;
 	
 	/**
 	 * Creates object for hockey sticks.
@@ -15,9 +16,12 @@ public class BCHSHockey
 	 */
 	public BCHSHockey(int jagChannel, int topLimitChannel, int bottomLimitChannel)
 	{
+                safety = SafetyHelper.getInstance();
 		driveJag = new Jaguar(jagChannel);
 		topLimit = new LimitSwitch(topLimitChannel);
-		bottomLimit = new LimitSwitch(bottomLimitChannel);	
+		bottomLimit = new LimitSwitch(bottomLimitChannel);
+                
+                safety.
 	}
 	
 	/**

@@ -11,6 +11,7 @@ public class BCHSBot extends IterativeRobot
 	BCHSLauncher launcher;
 	BCHSRetrieval retrieval;
 	BCHSChasis chasis;
+        SafetyHelper safety;
 	
 	DriverStation ds = DriverStation.getInstance();
 	DriverStationLCD dsLCD = DriverStationLCD.getInstance();
@@ -39,6 +40,8 @@ public class BCHSBot extends IterativeRobot
 		chasis = new BCHSChasis(Config.LENCODER[0], Config.LENCODER[1], Config.RENCODER[0], Config.RENCODER[1], Config.ULTRASONIC, Config.LDRIVE, Config.RDRIVE);
 		xKinect = new BCHSKinect(chasis.leftSide, chasis.rightSide, launcher, retrieval, hockeySticks);
 		
+                //Other
+                safety = SafetyHelper.getInstance();
 		dsLCD.println(DriverStationLCD.Line.kUser6, 1, "V1.1");
 		dsLCD.updateLCD();
 	}

@@ -16,6 +16,8 @@ abstract class SafetyObject
 	
     public abstract void stop();
 	
+	public abstract boolean isSafe();
+	
     public abstract String getDescription();
 }
 

@@ -22,7 +22,13 @@ public class LimitSwitch extends SafetyObject
 		this.inverted = inverted;
 		this.controller = controller;
 	}
-	
+	public boolean isSafe()
+        {
+            if (this.get())
+                return false;
+            else
+                return true;
+        }
 	public void stop() 
 	{
 		controller.disable();
@@ -34,9 +40,9 @@ public class LimitSwitch extends SafetyObject
 	}
 	public boolean get()
 	{
-		if (inverted)
-			return !limitSwitch.get();
-		else
-			return limitSwitch.get();
+            if (inverted)
+                return !limitSwitch.get();
+            else
+                return limitSwitch.get();
 	}
 }

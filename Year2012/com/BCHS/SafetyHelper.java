@@ -34,6 +34,9 @@ public class SafetyHelper
 	
 	Thread threadRun;
 	boolean thread_keepalive;
+        boolean isSafe;
+        
+        SafetyObject[] safetyArray;
 	
 	public SafetyHelper()
 	{
@@ -46,14 +49,14 @@ public class SafetyHelper
 	}
 	private void task()
 	{
-		int i = 0;
+
 		while (thread_keepalive)
 		{
-			i++;
-			if (i <= 5)
-				System.out.println("Hello");
-			else
-				release();
+			
+			for (int i = 0; i < safetyArray.length; i++)
+	
+				if (!safetyArray[i].isSafe())
+					safetyArray[i].stop();
 		}
 	}
 	
@@ -61,5 +64,17 @@ public class SafetyHelper
 	{
 		thread_keepalive = false;
 	}
+    
+	public void addSafetyObject(SafetyObject newSafetyObject)
+	{
+		SafetyObject[] temp = new SafetyObject[safetyArray.length + 1];
+		
+		for (int i = 0; i < safetyArray.length; i++)
+			temp[i] = safetyArray[i];
+		
+		temp[temp.length-1] = newSafetyObject;
+		
+		safetyArray = temp;
+	}	
        
 }

@@ -65,8 +65,9 @@ public class SafetyHelper
 		thread_keepalive = false;
 	}
     
-	/*public void addSafetyObject(SafetyObject newSafetyObject)
+	public void addSafetyObject(SafetyObject newSafetyObject)
 	{
+		/*
 		SafetyObject[] temp = new SafetyObject[safetyArray.length + 1];
 		
 		for (int i = 0; i < safetyArray.length; i++)
@@ -75,6 +76,7 @@ public class SafetyHelper
 		temp[temp.length-1] = newSafetyObject;
 		
 		safetyArray = temp;
-	}*/	
+		 */
+	}
        
 }

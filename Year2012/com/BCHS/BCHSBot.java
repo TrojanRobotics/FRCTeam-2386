@@ -62,7 +62,13 @@ public class BCHSBot extends IterativeRobot
 	{
 		if (ds.getDigitalIn(1))
 		{
-			
+			if (autoOnce)
+			{		
+				chasis.leftSidePID.setSetpoint(10.0);
+				chasis.rightSidePID.setSetpoint(10.0);
+				chasis.enable();
+				autoOnce = false;
+			}
 		}
 		else if (ds.getDigitalIn(2))
 		{

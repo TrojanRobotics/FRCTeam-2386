@@ -25,8 +25,8 @@ public class BCHSChasis
 		leftEncoder.start();
 		rightEncoder.start();
 		
-		leftSidePID = new PIDController(0.0, 0.0, 0.0, leftEncoder, this.leftSide);
-		rightSidePID = new PIDController(0.0, 0.0, 0.0, rightEncoder, this.rightSide);
+		leftSidePID = new PIDController(0.5, 0.1, 0.3, leftEncoder, this.leftSide);
+		rightSidePID = new PIDController(0.5, 0.1, 0.3, rightEncoder, this.rightSide);
 	}
 	
 	public void set(double speed)

@@ -2,6 +2,7 @@ package Year2012.com.BCHS;
 
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class BCHSBot extends IterativeRobot
 {
@@ -11,7 +12,7 @@ public class BCHSBot extends IterativeRobot
 	BCHSLauncher launcher;
 	BCHSRetrieval retrieval;
 	BCHSChasis chasis;
-        SafetyHelper safety;
+    //SafetyHelper safety;
 	
 	DriverStation ds = DriverStation.getInstance();
 	DriverStationLCD dsLCD = DriverStationLCD.getInstance();
@@ -41,8 +42,8 @@ public class BCHSBot extends IterativeRobot
 		xKinect = new BCHSKinect(chasis.leftSide, chasis.rightSide, launcher, retrieval, hockeySticks);
 		
                 //Other
-                safety = SafetyHelper.getInstance();
-		dsLCD.println(DriverStationLCD.Line.kUser6, 1, "V1.1");
+        //safety = SafetyHelper.getInstance();
+		dsLCD.println(DriverStationLCD.Line.kUser6, 1, "V1.2");
 		dsLCD.updateLCD();
 	}
 	
@@ -157,6 +158,8 @@ public class BCHSBot extends IterativeRobot
 				retrieval.set(0.0);
 			
 			dsLCD.updateLCD();
+			SmartDashboard.putDouble("leftSide", chasis.leftEncoder.getRate());
+			SmartDashboard.putDouble("RightSide", chasis.rightEncoder.getRate());
 		}
 	}
 }

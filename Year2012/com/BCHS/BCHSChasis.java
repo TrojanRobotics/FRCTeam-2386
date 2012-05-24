@@ -13,7 +13,7 @@ public class BCHSChasis
 	
 	public BCHSChasis(int leftAChannel, int leftBChannel, int rightAChannel, int rightBChannel, int ultraSonic, int[] leftSide, int[] rightSide)
 	{
-		leftEncoder = new Encoder(leftAChannel, leftBChannel);
+		leftEncoder = new Encoder(leftAChannel, leftBChannel, true);
 		rightEncoder = new Encoder(rightAChannel, rightBChannel);
 		ultrasonic = new AnalogChannel(ultraSonic);
 		this.leftSide = new BCHSBundle(leftSide[0], leftSide[1]);
@@ -57,4 +57,5 @@ public class BCHSChasis
 		leftEncoder.reset();
 		rightEncoder.reset();
 	}
+	
 }

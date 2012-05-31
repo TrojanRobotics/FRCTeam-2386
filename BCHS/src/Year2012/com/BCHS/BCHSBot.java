@@ -2,6 +2,7 @@ package Year2012.com.BCHS;
 
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class BCHSBot extends IterativeRobot
 {
@@ -39,7 +40,7 @@ public class BCHSBot extends IterativeRobot
 		chasis = new BCHSChasis(Config.LENCODER[0], Config.LENCODER[1], Config.RENCODER[0], Config.RENCODER[1], Config.ULTRASONIC, Config.LDRIVE, Config.RDRIVE);
 		xKinect = new BCHSKinect(chasis.leftSide, chasis.rightSide, launcher, retrieval, hockeySticks);
 		
-		dsLCD.println(DriverStationLCD.Line.kUser6, 1, "V1.1");
+		dsLCD.println(DriverStationLCD.Line.kUser6, 1, "V1.2.3");
 		dsLCD.updateLCD();
 	}
 	
@@ -47,6 +48,7 @@ public class BCHSBot extends IterativeRobot
 	{
 		test = true;
 		autoOnce = true;
+		chasis.stop();
 	}
 	
 	public void autonomousInit()
@@ -56,9 +58,18 @@ public class BCHSBot extends IterativeRobot
 
 	public void autonomousPeriodic()
 	{
+		SmartDashboard.putDouble("leftside",chasis.leftEncoder.getRate());
+		SmartDashboard.putDouble("rightside",chasis.rightEncoder.getRate());
+		
+		SmartDashboard.putDouble("leftsideD",chasis.leftEncoder.getDistance());
+		SmartDashboard.putDouble("rightsideD",chasis.rightEncoder.getDistance());
 		if (ds.getDigitalIn(1))
 		{
-			
+			if (autoOnce) 
+			{	
+				chasis.enable();
+				chasis.setSetpoint(12.0);
+			}
 		}
 		else if (ds.getDigitalIn(2))
 		{
@@ -109,6 +120,8 @@ public class BCHSBot extends IterativeRobot
 
 	public void teleopPeriodic()
 	{	
+		SmartDashboard.putDouble("leftside",chasis.leftEncoder.getRate());
+		SmartDashboard.putDouble("rightside",chasis.leftEncoder.getRate());
 		if (Config.TESTING && test)
 		{
 			

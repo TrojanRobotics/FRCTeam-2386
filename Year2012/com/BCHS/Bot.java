@@ -23,6 +23,7 @@ public class Bot extends IterativeRobot
 	
 	public void robotInit()
 	{
+		printData();
 		//Control Inputs
 		driveJoystick = new Joystick(Config.MAIN_JOYSTICK);
 		secondaryJoystick = new Joystick(Config.SECONDARY_JOYSTICK);
@@ -55,11 +56,7 @@ public class Bot extends IterativeRobot
 
 	public void autonomousPeriodic()
 	{
-		SmartDashboard.putDouble("leftside",chasis.leftEncoder.getRate());
-		SmartDashboard.putDouble("rightside",chasis.rightEncoder.getRate());
-		
-		SmartDashboard.putDouble("leftsideD",chasis.leftEncoder.getDistance());
-		SmartDashboard.putDouble("rightsideD",chasis.rightEncoder.getDistance());
+		printData();
 		if (ds.getDigitalIn(1))
 		{
 			if (autoOnce) 
@@ -116,9 +113,8 @@ public class Bot extends IterativeRobot
 	}
 
 	public void teleopPeriodic()
-	{	
-		SmartDashboard.putDouble("leftside",chasis.leftEncoder.getRate());
-		SmartDashboard.putDouble("rightside",chasis.leftEncoder.getRate());
+	{
+	printData();
 		if (Config.TESTING && test)
 		{
 			
@@ -165,5 +161,13 @@ public class Bot extends IterativeRobot
 			
 			dsLCD.updateLCD();
 		}
+	}
+	public void printData()
+	{		
+		SmartDashboard.putDouble("leftside",chasis.leftEncoder.getRate());
+		SmartDashboard.putDouble("rightside",chasis.rightEncoder.getRate());
+		
+		SmartDashboard.putDouble("leftsideD",chasis.leftEncoder.getDistance());
+		SmartDashboard.putDouble("rightsideD",chasis.rightEncoder.getDistance());
 	}
 }

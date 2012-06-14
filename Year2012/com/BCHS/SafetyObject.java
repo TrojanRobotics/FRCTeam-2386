@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Year2012.com.BCHS;
+package com.BCHS;
 
 import edu.wpi.first.wpilibj.SpeedController;
 
@@ -15,8 +15,6 @@ abstract class SafetyObject
 	SpeedController controller;
 	
     public abstract void stop();
-	
-	public abstract boolean isSafe();
 	
     public abstract String getDescription();
 }

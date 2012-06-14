@@ -1,12 +1,17 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
 
     This is a sample netbeans project file for a Sun Spot Application project.
     You may edit it freely, it doesn't affect the ant-powered build.
 
- --><project xmlns="http://www.netbeans.org/ns/project/1">
+ -->
+<project xmlns="http://www.netbeans.org/ns/project/1">
     <type>org.netbeans.modules.ant.freeform</type>
     <configuration>
         <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
+            <name>BCHS</name>
+        </general-data>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/2">
             <name>BCHS</name>
             <properties>
                 <property-file>${user.home}/.sunspotfrc.properties</property-file>
@@ -15,9 +20,35 @@
             </properties>
             <folders>
                 <source-folder>
+                    <label>..\Year2012</label>
+                    <location>../Year2012</location>
+                </source-folder>
+                <source-folder>
+                    <label>BCHS</label>
+                    <location>.</location>
+                    <encoding>windows-1252</encoding>
+                </source-folder>
+                <source-folder>
                     <label>src</label>
                     <type>java</type>
                     <location>src</location>
+                    <encoding>windows-1252</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>..\Year2012</label>
+                    <type>java</type>
+                    <location>../Year2012</location>
+                    <encoding>windows-1252</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>..\Misc</label>
+                    <type>java</type>
+                    <location>../Misc</location>
+                    <encoding>windows-1252</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>..\Misc</label>
+                    <location>../Misc</location>
                 </source-folder>
             </folders>
             <ide-actions>
@@ -54,6 +85,14 @@
                         <label>src</label>
                         <location>src</location>
                     </source-folder>
+                    <source-folder style="packages">
+                        <label>..\Year2012</label>
+                        <location>../Year2012</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>..\Misc</label>
+                        <location>../Misc</location>
+                    </source-folder>
                     <source-file>
                         <location>build.xml</location>
                     </source-file>
@@ -81,8 +120,9 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/1">
             <compilation-unit>
                 <package-root>src</package-root>
-                <classpath mode="boot">${sunspot.bootclasspath}</classpath>
-                <classpath mode="compile">${wpilibj.home}/classes.jar</classpath>
+                <package-root>../Year2012</package-root>
+                <package-root>../Misc</package-root>
+                <classpath mode="compile">C:/Users/Laxman/sunspotfrcsdk/lib/WPILibJ/classes.jar</classpath>
                 <built-to>build</built-to>
                 <source-level>1.4</source-level>
             </compilation-unit>

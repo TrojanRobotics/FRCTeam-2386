@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Year2012.com.BCHS;
+package com.BCHS;
 
 /**
  *
@@ -25,19 +25,12 @@ public class SafetyHelper
 			threadExe.task();
 		}
 	}
-        private static SafetyHelper instance = new SafetyHelper();
-        
-        public static SafetyHelper getInstance()
-        {
-            return instance;
-        }
 	
 	Thread threadRun;
 	boolean thread_keepalive;
-        boolean isSafe;
-        
-        SafetyObject[] safetyArray;
 	
+	SafetyObject[] safetyArray;
+			
 	public SafetyHelper()
 	{
 		threadRun = new Thread(new ThreadTask(this), "Task");
@@ -49,14 +42,9 @@ public class SafetyHelper
 	}
 	private void task()
 	{
-
 		while (thread_keepalive)
 		{
 			
-			for (int i = 0; i < safetyArray.length; i++)
-	
-				if (!safetyArray[i].isSafe())
-					safetyArray[i].stop();
 		}
 	}
 	
@@ -64,10 +52,9 @@ public class SafetyHelper
 	{
 		thread_keepalive = false;
 	}
-    
+	
 	public void addSafetyObject(SafetyObject newSafetyObject)
 	{
-		/*
 		SafetyObject[] temp = new SafetyObject[safetyArray.length + 1];
 		
 		for (int i = 0; i < safetyArray.length; i++)
@@ -76,7 +63,5 @@ public class SafetyHelper
 		temp[temp.length-1] = newSafetyObject;
 		
 		safetyArray = temp;
-		 */
-	}
-       
+	}		
 }

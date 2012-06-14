@@ -1,6 +1,6 @@
 MIDlet-Name: BCHS
 MIDlet-Version: 1.0.0
 MIDlet-Vendor: FIRST
-MIDlet-1: BCHSBot, , Year2012.com.BCHS.BCHSBot
+MIDlet-1: Bot, , com.BCHS.Bot
 MicroEdition-Profile: IMP-1.0
 MicroEdition-Configuration: CLDC-1.1

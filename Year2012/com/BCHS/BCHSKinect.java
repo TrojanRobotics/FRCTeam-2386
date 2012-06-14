@@ -1,31 +1,37 @@
-package Year2012.com.BCHS;
+package com.BCHS;
 
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.Kinect;
 import edu.wpi.first.wpilibj.Skeleton;
 
-public class BCHSKinect {
+public class BCHSKinect 
+{
 
-    BCHSBundle xleftSide, xrightSide;
-    BCHSLauncher launcher;
-    BCHSRetrieval retrieval;
-    BCHSHockey hockeySticks;
-    double leftAxis = 0.0;
-    double rightAxis = 0.0;
-    double leftAngle, rightAngle, headAngle, rightLegAngle, leftLegAngle, rightLegYZ, leftLegYZ, EtoWLeft, WtoHLeft, leftAngleYZ, OriginGetY, OriginGetX, TheArrow, ForOrBackRight, ForOrBackLeft, HR, WR, HL, WL, rar, ror, MaxForRight, MaxForLeft, MaxRevRight, MaxRevLeft, ZeroRight, ZeroLeft, inR, inL, Nothing, Happened, Fail, Ure, RKneeAnkleYZ, LKneeAnkleYZ;
+    Bundle leftSide, rightSide;
+    Launcher launcher;
+    Retrieval retrieval;
+    Hockey hockeySticks;
+    double leftAxis, rightAxis, leftAngle, rightAngle, headAngle, rightLegAngle, leftLegAngle, rightLegYZ, leftLegYZ, EtoWLeft, WtoHLeft, leftAngleYZ, OriginGetY, OriginGetX, TheArrow, ForOrBackRight, ForOrBackLeft, HR, WR, HL, WL, rar, ror, MaxForRight, MaxForLeft, MaxRevRight, MaxRevLeft, ZeroRight, ZeroLeft, inR, inL, Nothing, Happened, Fail, Ure, RKneeAnkleYZ, LKneeAnkleYZ;
+	Kinect kinect;
 
-    BCHSKinect(BCHSBundle leftSide, BCHSBundle rightSide, BCHSLauncher plauncher, BCHSRetrieval pretrieval, BCHSHockey LRHockeysticks) {
-        xleftSide = leftSide;
-        xrightSide = rightSide;
-        launcher = plauncher;
-        retrieval = pretrieval;
-        hockeySticks = LRHockeysticks;
+    BCHSKinect(Bundle leftSide, Bundle rightSide, Launcher launcher, Retrieval retrieval, Hockey hockeySticks) 
+	{
+        leftAxis = 0.0;
+		rightAxis = 0.0;
+		this.leftSide = leftSide;
+        this.rightSide = rightSide;
+        this.launcher = launcher;
+        this.retrieval = retrieval;
+        this.hockeySticks = hockeySticks;
+		kinect = Kinect.getInstance();
     }
 
-    public void kinectDrive(Kinect kinect) {
+    public void kinectDrive() 
+	{
 
 
-        if (kinect.getSkeleton().GetTrackState() == Skeleton.tTrackState.kTracked) {
+        if (kinect.getSkeleton().GetTrackState() == Skeleton.tTrackState.kTracked) 
+		{
             Ure = kinect.getSkeleton().GetSpine().getY();
             Fail = kinect.getSkeleton().GetShoulderCenter().getY();
             OriginGetY = ((Fail + Ure) / 2);
@@ -87,7 +93,9 @@ public class BCHSKinect {
                     hockeySticks.set(-0.5);
                 }
 
-            } else {
+            } 
+			else 
+			{
                 if (leftAngle < 180.0 && leftAngle > 0.0) {
                     if (ForOrBackRight > 0.30) {
                         ForOrBackRight = 0.30;
@@ -134,7 +142,8 @@ public class BCHSKinect {
      * Y-axis
      * @return The angle in degrees
      */
-    public double AngleXY(Skeleton.Joint origin, Skeleton.Joint measured, boolean mirrored) {
+    public double AngleXY(Skeleton.Joint origin, Skeleton.Joint measured, boolean mirrored) 
+	{
         return Math.toDegrees(MathUtils.atan2(measured.getY() - origin.getY(),
                 (mirrored) ? (origin.getX() - measured.getX()) : (measured.getX() - origin.getX())));
     }
@@ -151,7 +160,8 @@ public class BCHSKinect {
      * Y-axis
      * @return The angle in degrees
      */
-    public double AngleXY2(double OriginX, double OriginY, Skeleton.Joint measured, boolean mirrored) {
+    public double AngleXY2(double OriginX, double OriginY, Skeleton.Joint measured, boolean mirrored) 
+	{
         return Math.toDegrees(MathUtils.atan2(measured.getY() - OriginY,
                 (mirrored) ? (OriginX - measured.getX()) : (measured.getX() - OriginX)));
     }
@@ -160,7 +170,8 @@ public class BCHSKinect {
      * Was used to measure an angle(in degrees) thats not necessarily a joint in
      * kinect
      */
-    public double AngleYZ(Skeleton.Joint origin, Skeleton.Joint measured, boolean mirrored) {
+    public double AngleYZ(Skeleton.Joint origin, Skeleton.Joint measured, boolean mirrored) 
+	{
         return Math.toDegrees(MathUtils.atan2(measured.getY() - origin.getY(),
                 (mirrored) ? (origin.getZ() - measured.getZ()) : (measured.getZ() - origin.getZ())));
     }
@@ -174,7 +185,8 @@ public class BCHSKinect {
      * @param tolerance
      * @return True if the z-coordinates are within tolerance
      */
-    public boolean InSameZPlane(Skeleton.Joint origin, Skeleton.Joint measured, double tolerance) {
+    public boolean InSameZPlane(Skeleton.Joint origin, Skeleton.Joint measured, double tolerance) 
+	{
         return Math.abs(measured.getZ() - origin.getZ()) < tolerance;
     }
 
@@ -189,7 +201,8 @@ public class BCHSKinect {
      * @param outputMax The maximum value of the output range
      * @return The output value scaled and constrained to the output range
      */
-    public double CoerceToRange(double input, double inputMin, double inputMax, double outputMin, double outputMax) {
+    public double CoerceToRange(double input, double inputMin, double inputMax, double outputMin, double outputMax) 
+	{
         /*
          * Determine the center of the input range and output range
          */
@@ -215,8 +228,9 @@ public class BCHSKinect {
     /*
      * Sets speed to Jaguars 1 through -1 only
      */
-    public void setSpeed(double speedleft, double speedright) {
-        xleftSide.set(speedleft * 0.75);
-        xrightSide.set(-speedright * 0.75);
+    public void setSpeed(double speedleft, double speedright) 
+	{
+        leftSide.set(speedleft * 0.75);
+        rightSide.set(-speedright * 0.75);
     }
 }

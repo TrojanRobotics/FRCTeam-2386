@@ -1,15 +1,15 @@
-package Year2012.com.BCHS;
+package com.BCHS;
 
 import edu.wpi.first.wpilibj.Jaguar;
 
-public class BCHSRetrieval 
+public class Retrieval 
 {
 	Jaguar liftJag;
 	/**
 	 * Creates object for retrieval.
 	 * @param liftJagChannel Channel for jaguar.
 	 */
-	public BCHSRetrieval(int liftJagChannel)
+	public Retrieval(int liftJagChannel)
 	{
 		liftJag = new Jaguar(liftJagChannel);
 	}

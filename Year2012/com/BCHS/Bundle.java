@@ -1,14 +1,14 @@
-package Year2012.com.BCHS;
+package com.BCHS;
 
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.SpeedController;
 
-public class BCHSBundle implements PIDOutput, SpeedController
+public class Bundle implements PIDOutput, SpeedController
 {
 	protected Jaguar jagOne, jagTwo;
 	
-	public BCHSBundle(int channelOne, int channelTwo)
+	public Bundle(int channelOne, int channelTwo)
 	{
 		jagOne = new Jaguar(channelOne);
 		jagTwo = new Jaguar(channelTwo);

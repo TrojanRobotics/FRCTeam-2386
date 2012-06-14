@@ -1,4 +1,4 @@
-package Year2012.com.BCHS;
+package com.BCHS;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.Relay;
@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.image.ColorImage;
 import edu.wpi.first.wpilibj.image.NIVisionException;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 
-public class BCHSCamera
+public class Camera
 {
 	AxisCamera camera;
 	ParticleAnalysisReport[] orderedParticles;
@@ -20,7 +20,7 @@ public class BCHSCamera
 	ParticleAnalysisReport largestParticle;
 	//Relay relay;
 	
-	public BCHSCamera ()
+	public Camera ()
 	{
 		//camera = AxisCamera.getInstance();
 		//camera.writeBrightness(50);

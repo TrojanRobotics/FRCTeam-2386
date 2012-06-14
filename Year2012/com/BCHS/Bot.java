@@ -1,45 +1,44 @@
-package Year2012.com.BCHS;
+package com.BCHS;
 
-import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class BCHSBot extends IterativeRobot
+public class Bot extends IterativeRobot
 {
-	BCHSCamera cam;
-	BCHSHockey hockeySticks;
-	BCHSKinect xKinect;
-	BCHSLauncher launcher;
-	BCHSRetrieval retrieval;
-	BCHSChasis chasis;
+	Camera cam;
+	Hockey hockeySticks;
+	BCHSKinect kinect;
+	Launcher launcher;
+	Retrieval retrieval;
+	Chasis chasis;
 	
 	DriverStation ds = DriverStation.getInstance();
 	DriverStationLCD dsLCD = DriverStationLCD.getInstance();
 	
 	Joystick driveJoystick, secondaryJoystick;
 	
-	Kinect kinect;
 	
 	boolean test = true;
 	boolean autoOnce = true;
 	
 	public void robotInit()
 	{
+		printData();
 		//Control Inputs
 		driveJoystick = new Joystick(Config.MAIN_JOYSTICK);
 		secondaryJoystick = new Joystick(Config.SECONDARY_JOYSTICK);
-		kinect = Kinect.getInstance();
 		
 		//Functional Mechanisms
-		launcher = new BCHSLauncher(Config.SENCODER[0], Config.SENCODER[1], Config.SHOOTER[0], Config.SHOOTER[1]);
-		retrieval = new BCHSRetrieval(Config.RETRIEVE);
-		hockeySticks = new BCHSHockey(Config.HOCKEY, Config.TLIMIT_SWITCH, Config.BLIMIT_SWITCH);
-		cam = new BCHSCamera();
+		launcher = new Launcher(Config.SENCODER[0], Config.SENCODER[1], Config.SHOOTER[0], Config.SHOOTER[1]);
+		retrieval = new Retrieval(Config.RETRIEVE);
+		hockeySticks = new Hockey(Config.HOCKEY, Config.TLIMIT_SWITCH, Config.BLIMIT_SWITCH);
+		cam = new Camera();
 		
 		//Drive Systems
-		chasis = new BCHSChasis(Config.LENCODER[0], Config.LENCODER[1], Config.RENCODER[0], Config.RENCODER[1], Config.ULTRASONIC, Config.LDRIVE, Config.RDRIVE);
-		xKinect = new BCHSKinect(chasis.leftSide, chasis.rightSide, launcher, retrieval, hockeySticks);
+		chasis = new Chasis(Config.LENCODER[0], Config.LENCODER[1], Config.RENCODER[0], Config.RENCODER[1], Config.ULTRASONIC, Config.LDRIVE, Config.RDRIVE);
+		kinect = new BCHSKinect(chasis.leftSide, chasis.rightSide, launcher, retrieval, hockeySticks);
 		
-		dsLCD.println(DriverStationLCD.Line.kUser6, 1, "V1.1");
+		dsLCD.println(DriverStationLCD.Line.kUser6, 1, "V1.2.3");
 		dsLCD.updateLCD();
 	}
 	
@@ -47,6 +46,7 @@ public class BCHSBot extends IterativeRobot
 	{
 		test = true;
 		autoOnce = true;
+		chasis.stop();
 	}
 	
 	public void autonomousInit()
@@ -56,9 +56,14 @@ public class BCHSBot extends IterativeRobot
 
 	public void autonomousPeriodic()
 	{
+		printData();
 		if (ds.getDigitalIn(1))
 		{
-			
+			if (autoOnce) 
+			{	
+				chasis.enable();
+				chasis.setSetpoint(12.0);
+			}
 		}
 		else if (ds.getDigitalIn(2))
 		{
@@ -71,7 +76,7 @@ public class BCHSBot extends IterativeRobot
 		}
 		else if (ds.getDigitalIn(3))
 		{
-			xKinect.kinectDrive(kinect);
+			kinect.kinectDrive();
 		}
 		else if (ds.getDigitalIn(4) && autoOnce)
 		{
@@ -112,25 +117,26 @@ public class BCHSBot extends IterativeRobot
 	}
 
 	public void teleopPeriodic()
-	{	
+	{
+	printData();
 		if (Config.TESTING && test)
 		{
 			
 		} 
 		else 
 		{
-			dsLCD.println(DriverStationLCD.Line.kMain6, 1, ""+MathUtils.round(-launcher.encoder.getRate()));
+			//dsLCD.println(DriverStationLCD.Line.kMain6, 1, ""+MathUtils.round(-launcher.encoder.getRate()));
 			
 			launcher.lightsOn();
 			
 			double x = driveJoystick.getX();
 			double y = driveJoystick.getY();
 			
-			x = BCHSLib.signSquare(x);
-			y = BCHSLib.signSquare(y);
+			x = Lib.signSquare(x);
+			y = Lib.signSquare(y);
 			
-			chasis.leftSide.set(BCHSLib.limitOutput(y - x));
-			chasis.rightSide.set(-BCHSLib.limitOutput(y + x));
+			chasis.leftSide.set(Lib.limitOutput(y - x));
+			chasis.rightSide.set(-Lib.limitOutput(y + x));
 			
                         if (driveJoystick.getRawButton(11))
 				hockeySticks.set(-1.0);
@@ -166,5 +172,13 @@ public class BCHSBot extends IterativeRobot
 			
 			dsLCD.updateLCD();
 		}
+	}
+	public void printData()
+	{		
+		SmartDashboard.putDouble("leftside",chasis.leftEncoder.getRate());
+		SmartDashboard.putDouble("rightside",chasis.rightEncoder.getRate());
+		
+		SmartDashboard.putDouble("leftsideD",chasis.leftEncoder.getDistance());
+		SmartDashboard.putDouble("rightsideD",chasis.rightEncoder.getDistance());
 	}
 }

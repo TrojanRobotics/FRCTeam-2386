@@ -1,17 +1,16 @@
-package Year2012.com.BCHS;
+package com.BCHS;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Relay;
 
-public class BCHSLauncher 
+public class Launcher 
 {
 	Encoder encoder;
 	PIDController launcherPID;
 	double kp, ki, kd;
-	BCHSBundle motorBundle;
-	DigitalInput limit;
+	Bundle motorBundle;
+	LimitSwitch limit;
 	Relay relay;
 	
 	/**
@@ -21,7 +20,7 @@ public class BCHSLauncher
 	 * @param channelOne The 1st channel for the PID bundle.
 	 * @param channelTwo The 2nd channel for the PID bundle.
 	 */
-	public BCHSLauncher(int aChannel, int bChannel, int channelOne, int channelTwo)
+	public Launcher(int aChannel, int bChannel, int channelOne, int channelTwo)
 	{
 		relay = new Relay(Config.LIGHTS);
 		relay.setDirection(Relay.Direction.kReverse);
@@ -34,9 +33,9 @@ public class BCHSLauncher
 		encoder.setDistancePerPulse(Config.SE_DPP);
 		encoder.start();
 		
-		motorBundle = new BCHSBundle(channelOne, channelTwo);
+		motorBundle = new Bundle(channelOne, channelTwo);
 		launcherPID = new PIDController(kp, ki, kd, encoder, motorBundle);		
-		limit = new DigitalInput(Config.RLIMIT_SWITCH);
+		limit = new LimitSwitch(Config.RLIMIT_SWITCH, true);
 	}
 	/**
 	 * A method to set RPM
@@ -67,17 +66,17 @@ public class BCHSLauncher
 	public boolean isReady()
 	{
 		if (limit.get())
-			return false;
-		else
 			return true;
+		else
+			return false;
 	}
 		
-	public void lightsOn(){
-		if (limit.get() == false){
+	public void lightsOn()
+        {
+		if (isReady())
 			relay.set(Relay.Value.kOn);
-		} else{
+		else
 			relay.set(Relay.Value.kOff);
-		}
 	}
 	
 }

@@ -88,7 +88,11 @@ public class Bot extends IterativeRobot
 			launcher.set(0.45);
 			Timer.delay(1.5);
 			retrieval.set(0.8);
-			Timer.delay(1.25);
+			Timer.delay(0.625);         //lines 86-90 editted to slow down launcher after first ball//
+                        retrieval.set(0.0);
+                        launcher.set(0.35);
+                        Timer.delay(0.625);
+                        retrieval.set(0.8);
 			hockeySticks.stop();
 			Timer.delay(10.0);
 			launcher.stop();
@@ -134,6 +138,13 @@ public class Bot extends IterativeRobot
 			chasis.leftSide.set(Lib.limitOutput(y - x));
 			chasis.rightSide.set(-Lib.limitOutput(y + x));
 			
+                        if (driveJoystick.getRawButton(11))
+				hockeySticks.set(-1.0);
+			else if (driveJoystick.getRawButton(10))
+				hockeySticks.set(1.0);
+			else
+				hockeySticks.set(0);
+                        
 			if (secondaryJoystick.getRawButton(11))
 				hockeySticks.set(-1.0);
 			else if (secondaryJoystick.getRawButton(10))

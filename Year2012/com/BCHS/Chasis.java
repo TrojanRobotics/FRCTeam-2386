@@ -3,6 +3,7 @@ package com.BCHS;
 import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
+import java.beans.Encoder;
 
 public class Chasis
 {

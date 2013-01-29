@@ -3,9 +3,18 @@ package com.BCHS;
 import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.Driverstation;
+import edu.wpi.first.wpilibj.DriversationLCD;
+import edu.wpi.first.wpilibj.IterativeRobot;
 
-public class Lib
-{
+public class Lib 
+{        
+        public static void clearLCD(DriverStationLCD LCD)
+        {
+            LCD.println(DriverStationLCD.Line.kUser1, 1,"                     ");
+            LCD.println(DriverStationLCD.Line.kUser2, 1,"                     ");
+            LCD.updateLCD();
+        }
 	public static double limitOutput(double value)
 	{
 		if (value > 1.0)
@@ -44,4 +53,7 @@ public class Lib
 	{
 		return (Ultrasonic.getVoltage()*1000.0/9.766);
 	}
+        
+        
+        
 }

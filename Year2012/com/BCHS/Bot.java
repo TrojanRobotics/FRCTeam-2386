@@ -47,6 +47,7 @@ public class Bot extends IterativeRobot
 		test = true;
 		autoOnce = true;
 		chasis.stop();
+                
 	}
 	
 	public void autonomousInit()

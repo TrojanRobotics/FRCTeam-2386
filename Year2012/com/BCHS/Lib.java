@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 
 public class Lib 
 {        
+            
+    
+    
         public static void clearLCD(DriverStationLCD LCD)
         {
             LCD.println(DriverStationLCD.Line.kUser1, 1,"                     ");
